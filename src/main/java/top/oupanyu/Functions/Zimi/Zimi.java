@@ -11,7 +11,7 @@ public class Zimi {
             if (guess.equals(zimiObject.getAnswer())){
                 ZimiBuffer.groupGuessingZimi.remove(event.getGroup().getId());
                 event.getSubject().sendMessage("回答正确！\n答案是："+ zimiObject.getAnswer()+"\n原因：" + zimiObject.getReason());
-            }else if (zimiObject.getChances() >= 1){
+            }else if (zimiObject.getChances() >= 2){
                 zimiObject.chances--;
                 event.getSubject().sendMessage("回答错了!还有" + zimiObject.getChances() + "次机会");
             }else {
