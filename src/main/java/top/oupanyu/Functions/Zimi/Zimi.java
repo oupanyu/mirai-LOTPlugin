@@ -14,6 +14,9 @@ public class Zimi {
             }else if (zimiObject.getChances() >= 1){
                 zimiObject.chances--;
                 event.getSubject().sendMessage("回答错了!还有" + zimiObject.getChances() + "次机会");
+            }else {
+                ZimiBuffer.groupGuessingZimi.remove(event.getGroup().getId());
+                event.getSubject().sendMessage("回答错了!机会已用尽！\n答案应为：" + zimiObject.getAnswer() + "\n解析：" + zimiObject.getReason());
             }
         }
 
