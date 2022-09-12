@@ -3,16 +3,14 @@ package top.oupanyu;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import net.mamoe.mirai.event.GlobalEventChannel;
-import net.mamoe.mirai.event.Listener;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import top.oupanyu.Functions.APictureADay;
 import top.oupanyu.Functions.KugouAPI;
 import top.oupanyu.Functions.RandomPoem;
 import top.oupanyu.Functions.Zimi.Zimi;
-import top.oupanyu.Functions.Zimi.ZimiObject;
 
-import java.util.HashMap;
+import java.util.logging.Logger;
 
 
 public final class Main extends JavaPlugin {
@@ -45,12 +43,13 @@ public final class Main extends JavaPlugin {
                 KugouAPI.getMusic(chain,event);
             }else if (chain.contentToString().contains(".mv")){
                 KugouAPI.getMV(chain,event);
-            }/*else if (chain.contentToString().contains(".每日一图")){
+            }else if (chain.contentToString().contains("..每日一图")){
                 APictureADay.getPic(chain,event);
-            }*/
+            }
 
 
         });
+        
 
         //listener.complete(); // 停止监听
 

@@ -1,9 +1,13 @@
 package top.oupanyu.request;
+import com.alibaba.fastjson2.JSONObject;
+
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
+
 public class Request {
     public static String get(String httpurl) {
         HttpURLConnection connection = null;
@@ -61,6 +65,7 @@ public class Request {
         }
         return result;
     }
+
     public static String post(String httpUrl, String param) {
         HttpURLConnection connection = null;
         InputStream is = null;
@@ -136,7 +141,7 @@ public class Request {
         return result;
     }
 
-    public static String downloadFile(String fileUrl,String saveUrl) {
+    public static String downloadFile(String fileUrl,String saveUrl,String filename) {
         HttpURLConnection httpUrl = null;
         byte[] buf = new byte[1024];
         int size = 0;
@@ -156,7 +161,7 @@ public class Request {
             //讲http上面的地址拆分成数组,
             String arrUrl[] = fileUrl.split("/");
             //输出流,输出到新的地址上面
-            FileOutputStream fos = new FileOutputStream(saveUrl+"/"+arrUrl[arrUrl.length-1]);
+            FileOutputStream fos = new FileOutputStream(saveUrl+"/"+filename);
             while ((size = bis.read(buf)) != -1){
                 fos.write(buf, 0, size);
             }
