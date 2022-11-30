@@ -7,14 +7,13 @@ import net.mamoe.mirai.message.data.MessageChain;
 import top.oupanyu.request.Request;
 
 import java.net.URLEncoder;
-import java.util.Arrays;
 
 
 public class KugouAPI {
     public static void getMusic(MessageChain chain, GroupMessageEvent event){
-        if (chain.contentToString().contains(".音乐搜索")) {
+        if (chain.contentToString().contains(".酷狗音乐")) {
             try {
-            String post = URLEncoder.encode(chain.contentToString().replace(".音乐搜索 ",""),"UTF-8");
+            String post = URLEncoder.encode(chain.contentToString().replace(".酷狗音乐 ",""),"UTF-8");
             String httpResult1 = Request.get("http://mobilecdn.kugou.com/api/v3/search/song?keyword="+post);//从X狗获取JSON对象
             JSONObject obj = JSON.parseObject(JSON.parseObject(httpResult1).getString("data"));
             JSONObject info = obj.getJSONArray("info").getJSONObject(0);
@@ -35,9 +34,9 @@ public class KugouAPI {
         }
     }
     public static void getMV(MessageChain chain, GroupMessageEvent event){
-        if (chain.contentToString().contains(".mv")) {
+        if (chain.contentToString().contains(".酷狗mv")) {
             try {
-                String post = URLEncoder.encode(chain.contentToString().replace(".mv ",""),"UTF-8");
+                String post = URLEncoder.encode(chain.contentToString().replace(".酷狗mv ",""),"UTF-8");
                 String httpResult1 = Request.get("http://mobilecdn.kugou.com/api/v3/search/song?keyword="+post);
                 JSONObject obj = JSON.parseObject(JSON.parseObject(httpResult1).getString("data"));
                 JSONObject info = obj.getJSONArray("info").getJSONObject(0);

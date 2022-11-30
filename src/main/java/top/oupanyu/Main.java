@@ -6,17 +6,9 @@ import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.utils.MiraiLogger;
-import top.oupanyu.Functions.APictureADay;
+import top.oupanyu.Functions.*;
 import top.oupanyu.Functions.Bilibili.GetBVideoInfo;
-import top.oupanyu.Functions.KugouAPI;
-import top.oupanyu.Functions.PixivPic;
-import top.oupanyu.Functions.RandomPoem;
 import top.oupanyu.Functions.Zimi.Zimi;
-import top.oupanyu.request.Request;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Arrays;
 
 
 public final class Main extends JavaPlugin {
@@ -55,13 +47,17 @@ public final class Main extends JavaPlugin {
 
         GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
             MessageChain chain=event.getMessage(); // 可获取到消息内容等, 详细查阅 `GroupMessageEvent`
-            if (chain.contentToString().contains(".音乐搜索")){
+            if (chain.contentToString().contains(".酷狗音乐")){
                 KugouAPI.getMusic(chain,event);
-            }else if (chain.contentToString().contains(".mv")){
+            }else if (chain.contentToString().contains(".酷狗mv")){
                 KugouAPI.getMV(chain,event);
+            }else if (chain.contentToString().contains(".网易云音乐")) {
+                NeteaseCloudMusic.getMusic(chain,event);
+            }else if (chain.contentToString().contains(".网易云mv")){
+                NeteaseCloudMusic.getMV(chain,event);
             }else if (chain.contentToString().contains("..每日一图")){
                 APictureADay.getPic(chain,event);
-            } else if (chain.contentToString().contains("..p站随机图片")) {
+            }else if (chain.contentToString().contains("..p站随机图片")) {
                 PixivPic.getPic(chain,event);
             }
 
@@ -78,6 +74,15 @@ public final class Main extends JavaPlugin {
                 }
 
 
+            }
+
+        });
+
+
+        GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
+            MessageChain chain=event.getMessage(); // 可获取到消息内容等, 详细查阅 `GroupMessageEvent`
+            if (chain.contentToString().contains(".帮助")){
+                event.getSubject().sendMessage(Help.helpText);
             }
 
         });
