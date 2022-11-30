@@ -20,12 +20,27 @@ public class Zimi {
             }
         }
 
-    public void start(MessageChain chain,GroupMessageEvent event){
-        if (chain.contentToString().equals(".猜字谜") && !ZimiBuffer.groupGuessingZimi.containsKey(event.getGroup().getId())) {
-            ZimiObject zimiObject = new ZimiObject();
-            zimiObject.getZimi();
-            ZimiBuffer.groupGuessingZimi.put(event.getGroup().getId(),zimiObject);
-            event.getSubject().sendMessage("猜字谜开始！\n问题：" + zimiObject.getQuestion()+ "\n使用（.猜）来输入答案");
-        }else {Zimi.guess(chain,event,ZimiBuffer.groupGuessingZimi.get(event.getGroup().getId()));}
+
+    public static void giveUp(MessageChain chain,GroupMessageEvent event){
+        String result = ZimiBuffer.groupGuessingZimi.get(event.getGroup().getId()).getAnswer();
+        String reason = ZimiBuffer.groupGuessingZimi.get(event.getGroup().getId()).getReason();
+        ZimiBuffer.groupGuessingZimi.remove(event.getGroup().getId());
+        event.getSubject().sendMessage("答案应为： " + result + "\n解析：" + reason);
     }
+
+    public void start(MessageChain chain,GroupMessageEvent event){
+        if (chain.contentToString().equals(".猜字谜") && ! ZimiBuffer.groupGuessingZimi.containsKey(event.getGroup().getId())) {
+            ZimiObject zimiObject = new ZimiObject();//建立字谜对象
+            zimiObject.getZimi();
+            ZimiBuffer.groupGuessingZimi.put(event.getGroup().getId(),zimiObject);//将字谜对象加入Hashmap
+            event.getSubject().sendMessage("猜字谜开始！\n问题：" + zimiObject.getQuestion()+ "\n使用（.猜）来输入答案\n使用(.放弃)放弃猜字谜");
+        }else if (chain.contentToString().contains(".猜")) {
+            Zimi.guess(chain,event,ZimiBuffer.groupGuessingZimi.get(event.getGroup().getId()));
+        } else if (chain.contentToString().contains(".放弃")) {
+            Zimi.giveUp(chain,event);
+        }
+
+    }
+
+
 }

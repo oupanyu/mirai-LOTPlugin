@@ -7,6 +7,7 @@ import net.mamoe.mirai.message.data.MessageChain;
 import top.oupanyu.request.Request;
 
 import java.net.URLEncoder;
+import java.util.Arrays;
 
 
 public class KugouAPI {
@@ -14,18 +15,18 @@ public class KugouAPI {
         if (chain.contentToString().contains(".音乐搜索")) {
             try {
             String post = URLEncoder.encode(chain.contentToString().replace(".音乐搜索 ",""),"UTF-8");
-            String httpResult1 = Request.get("http://mobilecdn.kugou.com/api/v3/search/song?keyword="+post);
+            String httpResult1 = Request.get("http://mobilecdn.kugou.com/api/v3/search/song?keyword="+post);//从X狗获取JSON对象
             JSONObject obj = JSON.parseObject(JSON.parseObject(httpResult1).getString("data"));
             JSONObject info = obj.getJSONArray("info").getJSONObject(0);
             String hash = info.getString("hash");
             String name = info.getString("filename");
-            String httpResult2 = Request.get(String.format("http://m.kugou.com/app/i/getSongInfo.php?cmd=playInfo&hash=%s",hash));
+            String httpResult2 = Request.get(String.format("http://m.kugou.com/app/i/getSongInfo.php?cmd=playInfo&hash=%s",hash));//获取下载地址JSON
             String URL = JSON.parseObject(httpResult2).getString("url");
             String message = "歌曲名:"+ name +"\n歌曲地址为:"+ URL;
             event.getSubject().sendMessage(message); // 回复消息
 
 
-            } catch (Exception e) {
+            } catch (Exception e) {//错误反馈到群内
                 if (e.getMessage().equals("Index 0 out of bounds for length 0")){
                     event.getSubject().sendMessage("出现错误！错误原因：找不到相应的音乐\n控制台输出："+ e.getMessage());
                 }

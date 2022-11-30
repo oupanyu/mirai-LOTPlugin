@@ -18,3 +18,8 @@ repositories {
     maven("https://maven.aliyun.com/repository/public")
     mavenCentral()
 }
+dependencies{
+    api("com.alibaba:fastjson:2.0.19")
+    api("org.yaml:snakeyaml:1.33")
+}
+

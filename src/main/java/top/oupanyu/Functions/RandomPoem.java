@@ -4,14 +4,14 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
-import top.oupanyu.Functions.API.APIConfig;
+import top.oupanyu.Main;
 import top.oupanyu.request.Request;
 
 public class RandomPoem {
     public static void getRandomPoem(MessageChain chain, GroupMessageEvent event){
         if (chain.contentToString().equals(".来首词")){
-            String httpResult = Request.get("http://api.tianapi.com/zmsc/index?key=" + APIConfig.TianAPIKey);
-            JSONArray obj = JSON.parseObject(httpResult).getJSONArray("newslist");
+            String httpResult = Request.get("http://api.tianapi.com/zmsc/index?key=" + Main.configloader.getTiankey());
+            JSONArray obj = JSON.parseObject(httpResult).getJSONArray("newslist");//获取JSON对象并转为数组
             try {
                 String poem = JSON.parseObject(obj.getString(0)).getString("content");
                 String author = JSON.parseObject(obj.getString(0)).getString("source");

@@ -1,8 +1,10 @@
 package top.oupanyu.Functions.Zimi;
 
 import com.alibaba.fastjson2.JSONObject;
-import top.oupanyu.Functions.API.APIConfig;
+import top.oupanyu.Main;
 import top.oupanyu.request.Request;
+
+import java.util.Arrays;
 
 public class ZimiObject {
     private String answer;
@@ -23,7 +25,7 @@ public class ZimiObject {
 
     public void getZimi(){
         try {
-            String result = Request.get("https://api.tianapi.com/zimi/index?key="+ APIConfig.TianAPIKey);
+            String result = Request.get("https://api.tianapi.com/zimi/index?key="+ Main.configloader.getTiankey());
             JSONObject obj = JSONObject.parseObject(result);
             JSONObject newslist = obj.getJSONArray("newslist").getJSONObject(0);
             this.question = newslist.getString("content");
@@ -31,7 +33,7 @@ public class ZimiObject {
             this.reason = newslist.getString("reason");
 
         }catch (Exception e){
-            this.answer = this.reason = this.question ="出现错误！请联系开发者,错误原因:\n" + e.getMessage();
+            this.answer = this.reason = this.question ="出现错误！请联系开发者,错误原因:\n" + Arrays.toString(e.getStackTrace());
         }
     }
 }
