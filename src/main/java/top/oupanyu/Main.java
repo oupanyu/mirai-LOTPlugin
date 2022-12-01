@@ -9,6 +9,8 @@ import net.mamoe.mirai.utils.MiraiLogger;
 import top.oupanyu.Functions.*;
 import top.oupanyu.Functions.Bilibili.GetBVideoInfo;
 import top.oupanyu.Functions.Zimi.Zimi;
+import top.oupanyu.Functions.transmission.PacketListener;
+import top.oupanyu.Functions.transmission.PacketSender;
 
 
 public final class Main extends JavaPlugin {
@@ -29,8 +31,15 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (Main.configloader.getTransmission()) {
+            new Thread(new PacketListener()).start();
+            GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class, event -> {
+                if (event.getGroup().getId() == Main.configloader.getGroupnum()) {
+                    PacketSender.send(event);
+                }
 
-
+            });
+        }
 
         GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
             MessageChain chain=event.getMessage(); // 可获取到消息内容等, 详细查阅 `GroupMessageEvent`

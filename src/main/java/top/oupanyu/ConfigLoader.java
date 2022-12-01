@@ -3,16 +3,22 @@ package top.oupanyu;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class ConfigLoader {
 
     private String tiankey = "";
+
+    private Boolean transmission;
+
+    private String server_ip = "";
+
+    private Integer server_port;
+
+    private Long groupnum,qqnum;
 
     public ConfigLoader() {
         try {
@@ -22,7 +28,15 @@ public class ConfigLoader {
             File folderFile = new File(folder);
             if (!file.exists() || !folderFile.exists()) {
                 String content = "#TianAPI Key\n" +
-                        "tiankey: \"1a2b3c4d5e6f7g\"";
+                        "tiankey: \"abcdefg\"\n" +
+                        "\n" +
+                        "\n" +
+                        "qqnum: 623456789\n" +
+                        "transmission: false\n" +
+                        "\n" +
+                        "groupnum: 898922395555\n" +
+                        "server_ip: \"127.0.0.1\"\n" +
+                        "server_port: 25565";
                 folderFile.mkdirs();
                 file.createNewFile();
                 FileWriter fileWritter = new FileWriter(fileName, true);
@@ -35,7 +49,11 @@ public class ConfigLoader {
             Object obj = yaml.load(Files.newInputStream(file.toPath()));
             Map map = (Map) obj;
             tiankey = (String) map.get("tiankey");
-
+            transmission = (Boolean)map.get("transmission");
+            qqnum = Long.valueOf(String.valueOf(map.get("qqnum")));
+            server_ip = (String) map.get("server_ip");
+            server_port = (Integer) map.get("server_port");
+            groupnum = Long.valueOf(String.valueOf(map.get("groupnum")));
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -44,5 +62,25 @@ public class ConfigLoader {
 
     public String getTiankey() {
         return tiankey;
+    }
+
+    public Boolean getTransmission() {
+        return transmission;
+    }
+
+    public Integer getServer_port() {
+        return server_port;
+    }
+
+    public String getServer_ip() {
+        return server_ip;
+    }
+
+    public Long getGroupnum() {
+        return groupnum;
+    }
+
+    public Long getQQnum() {
+        return qqnum;
     }
 }
