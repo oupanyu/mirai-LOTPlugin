@@ -42,7 +42,7 @@ public class ConfigLoader {
                 FileWriter fileWritter = new FileWriter(fileName, true);
                 fileWritter.write(content);
                 fileWritter.close();
-                Main.logger.warning("配置已生成！请先调整配置后再打开后端");
+                Main.logger.warning("配置已生成！请先调整配置后再打开mirai");
                 System.exit(0);
             }
             Yaml yaml = new Yaml();
@@ -83,4 +83,5 @@ public class ConfigLoader {
     public Long getQQnum() {
         return qqnum;
     }
+
 }

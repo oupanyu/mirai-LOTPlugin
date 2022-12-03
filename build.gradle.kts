@@ -4,15 +4,15 @@ import java.util.regex.Pattern.compile
 
 
 plugins {
-    val kotlinVersion = "1.6.21"
+    val kotlinVersion = "1.7.10"
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
 
-    id("net.mamoe.mirai-console") version "2.12.2"
+    id("net.mamoe.mirai-console") version "2.13.0-RC2"
 }
 
 group = "top.oupanyu"
-version = "0.1.0"
+version = "0.2.0"
 
 repositories {
     maven("https://maven.aliyun.com/repository/public")

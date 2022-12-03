@@ -12,6 +12,9 @@ import top.oupanyu.Functions.Zimi.Zimi;
 import top.oupanyu.Functions.transmission.PacketListener;
 import top.oupanyu.Functions.transmission.PacketSender;
 
+import java.io.IOException;
+import java.net.Socket;
+
 
 public final class Main extends JavaPlugin {
     public static final Main INSTANCE = new Main();
@@ -19,6 +22,10 @@ public final class Main extends JavaPlugin {
     public static final MiraiLogger logger = INSTANCE.getLogger();
 
     public static final ConfigLoader configloader = new ConfigLoader();
+
+    public static Socket socket;
+
+
 
 
     private Main() {
@@ -31,11 +38,27 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        //System.setProperty("file.encoding","UTF-8");
         if (Main.configloader.getTransmission()) {
+            try {
+                socket = new Socket(configloader.getServer_ip(), configloader.getServer_port());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             new Thread(new PacketListener()).start();
             GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class, event -> {
-                if (event.getGroup().getId() == Main.configloader.getGroupnum()) {
+                if (event.getGroup().getId() == Main.configloader.getGroupnum() && !event.getMessage().contentToString().equals("!重连")) {
                     PacketSender.send(event);
+                }else if (event.getMessage().contentToString().equals("!重连")){
+                    try {
+                        event.getSubject().sendMessage("正在重连");
+                        socket.close();
+                        socket = new Socket(configloader.getServer_ip(), configloader.getServer_port());
+                        event.getSubject().sendMessage("重连成功！");
+                    } catch (IOException e) {
+                        event.getSubject().sendMessage("重连失败！");
+                    }
+
                 }
 
             });
@@ -101,4 +124,6 @@ public final class Main extends JavaPlugin {
 
         logger.info("Plogin load done!");
     }
+
+
 }
