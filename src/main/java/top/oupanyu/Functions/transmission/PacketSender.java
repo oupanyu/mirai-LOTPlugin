@@ -46,4 +46,23 @@ public class PacketSender {
 
 
     }
+
+
+    public static void send(String sendstr) {
+        try {
+
+
+            DataOutputStream out = new DataOutputStream(socket
+                    .getOutputStream());// 向服务器端发送信息的DataOutputStream
+
+            String send = String.format("%s", sendstr);//读取控制台输入的内容
+            out.writeUTF(send);//将客户端的信息传递给服务器
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
 }

@@ -1,5 +1,6 @@
 package top.oupanyu;
 
+import net.mamoe.mirai.console.command.CommandManager;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import net.mamoe.mirai.event.GlobalEventChannel;
@@ -11,6 +12,8 @@ import top.oupanyu.Functions.Bilibili.GetBVideoInfo;
 import top.oupanyu.Functions.Zimi.Zimi;
 import top.oupanyu.Functions.transmission.PacketListener;
 import top.oupanyu.Functions.transmission.PacketSender;
+import top.oupanyu.command.Reconnect;
+import top.oupanyu.command.SendMessage2Server;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -29,8 +32,8 @@ public final class Main extends JavaPlugin {
 
 
     private Main() {
-        super(new JvmPluginDescriptionBuilder("top.oupanyu.qqbot", "0.1.0")
-                .name("Demo")
+        super(new JvmPluginDescriptionBuilder("top.oupanyu.qqbot", "0.2.0")
+                .name("LOT plugin")
                 .author("panyuou")
                 .info("GroupPlugin")
                 .build());
@@ -38,8 +41,15 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+
+
         //System.setProperty("file.encoding","UTF-8");
         if (Main.configloader.getTransmission()) {
+
+            CommandManager.INSTANCE.registerCommand(SendMessage2Server.INSTANCE,false);
+            CommandManager.INSTANCE.registerCommand(Reconnect.INSTANCE,false);
+
             try {
                 socket = new Socket(configloader.getServer_ip(), configloader.getServer_port());
             } catch (IOException e) {
@@ -122,7 +132,7 @@ public final class Main extends JavaPlugin {
 
         //listener.complete(); // 停止监听
 
-        logger.info("Plogin load done!");
+        logger.info("Plugin load done!");
     }
 
 

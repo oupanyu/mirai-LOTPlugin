@@ -31,10 +31,10 @@ public class ConfigLoader {
                         "tiankey: \"abcdefg\"\n" +
                         "\n" +
                         "\n" +
-                        "qqnum: 623456789\n" +
                         "transmission: false\n" +
+                        "qqnum: 123456789\n" +
                         "\n" +
-                        "groupnum: 898922395555\n" +
+                        "groupnum: 12345678901\n" +
                         "server_ip: \"127.0.0.1\"\n" +
                         "server_port: 25565";
                 folderFile.mkdirs();
