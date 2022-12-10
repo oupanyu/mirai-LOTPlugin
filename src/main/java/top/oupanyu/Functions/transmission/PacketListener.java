@@ -18,8 +18,8 @@ public class PacketListener implements Runnable{
             } catch (IOException e) {
                 continue;
             }
-            System.out.println(accpet);//输出来自服务器的信息
-            //Bot.getInstance(Main.configloader.getQQnum()).getGroup(Main.configloader.getGroupnum()).sendMessage(accpet);
+            //System.out.println(accpet);//输出来自服务器的信息
+            Bot.getInstance(Main.configloader.getQQnum()).getGroup(Main.configloader.getGroupnum()).sendMessage(accpet);
         }
 
     }

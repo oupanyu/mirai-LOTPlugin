@@ -61,7 +61,6 @@ public final class Main extends JavaPlugin {
                     PacketSender.send(event);
                 }else if (event.getMessage().contentToString().equals("!重连")){
                     try {
-                        event.getSubject().sendMessage("正在重连");
                         socket.close();
                         socket = new Socket(configloader.getServer_ip(), configloader.getServer_port());
                         event.getSubject().sendMessage("重连成功！");
