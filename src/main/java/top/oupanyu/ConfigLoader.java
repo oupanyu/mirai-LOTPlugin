@@ -33,6 +33,11 @@ public class ConfigLoader {
                         "tiankey: \"abcdefg\"\n" +
                         "\n" +
                         "\n" +
+                        "#OpenAI functions\n" +
+                        "openai_enable : true\n" +
+                        "#ChatGPT cookies\n" +
+                        "chatGPT_key : \" \"\n" +
+                        "#Transmission with Minecraft Server\n" +
                         "transmission: false\n" +
                         "qqnum: 123456789\n" +
                         "\n" +

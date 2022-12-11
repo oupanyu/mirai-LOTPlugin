@@ -80,13 +80,15 @@ public final class Main extends JavaPlugin {
 
         if (configloader.getOpenai_enable()){
             GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
+                if (event.getMessage().contentToString().equals(".重置ai会话") && !ChatGPT.onProcessing){
+                    chatbot.resetChat();
+                    event.getGroup().sendMessage("重置完成！");
+                }
+
                 if (event.getMessage().contentToString().contains(".ai") && !ChatGPT.onProcessing) {
                     new ChatGPT().run(event, chatbot);
                 }else if (event.getMessage().contentToString().contains(".ai") && ChatGPT.onProcessing){
                     event.getGroup().sendMessage("AI还在处理呢！");
-                }else if (event.getMessage().contentToString().equals(".ai 重置会话") && !ChatGPT.onProcessing){
-                    chatbot.resetChat();
-                    event.getGroup().sendMessage("重置完成！");
                 }
             });
 
