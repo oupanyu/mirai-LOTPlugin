@@ -1,5 +1,6 @@
 package top.oupanyu;
 
+import com.github.plexpt.chatgpt.Chatbot;
 import net.mamoe.mirai.console.command.CommandManager;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
@@ -10,6 +11,7 @@ import net.mamoe.mirai.utils.MiraiLogger;
 import top.oupanyu.Functions.*;
 import top.oupanyu.Functions.Bilibili.GetBVideoInfo;
 import top.oupanyu.Functions.Zimi.Zimi;
+import top.oupanyu.Functions.chatgpt.ChatGPT;
 import top.oupanyu.Functions.transmission.PacketListener;
 import top.oupanyu.Functions.transmission.PacketSender;
 import top.oupanyu.command.Reconnect;
@@ -17,6 +19,7 @@ import top.oupanyu.command.SendMessage2Server;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Map;
 
 
 public final class Main extends JavaPlugin {
@@ -27,6 +30,8 @@ public final class Main extends JavaPlugin {
     public static final ConfigLoader configloader = new ConfigLoader();
 
     public static Socket socket;
+
+    public static Chatbot chatbot = new Chatbot(configloader.getChatGPT_key());
 
 
 
@@ -71,6 +76,20 @@ public final class Main extends JavaPlugin {
                 }
 
             });
+        }
+
+        if (configloader.getOpenai_enable()){
+            GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
+                if (event.getMessage().contentToString().contains(".ai") && !ChatGPT.onProcessing) {
+                    new ChatGPT().run(event, chatbot);
+                }else if (event.getMessage().contentToString().contains(".ai") && ChatGPT.onProcessing){
+                    event.getGroup().sendMessage("AI还在处理呢！");
+                }else if (event.getMessage().contentToString().equals(".ai 重置会话") && !ChatGPT.onProcessing){
+                    chatbot.resetChat();
+                    event.getGroup().sendMessage("重置完成！");
+                }
+            });
+
         }
 
         GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{

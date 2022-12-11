@@ -12,7 +12,9 @@ public class ConfigLoader {
 
     private String tiankey = "";
 
-    private Boolean transmission;
+    private String chatGPT_key;
+
+    private Boolean transmission,openai_enable;
 
     private String server_ip = "";
 
@@ -54,6 +56,8 @@ public class ConfigLoader {
             server_ip = (String) map.get("server_ip");
             server_port = (Integer) map.get("server_port");
             groupnum = Long.valueOf(String.valueOf(map.get("groupnum")));
+            chatGPT_key = (String) map.get("chatGPT_key");
+            openai_enable = (Boolean) map.get("openai_enable");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -84,4 +88,11 @@ public class ConfigLoader {
         return qqnum;
     }
 
+    public String getChatGPT_key() {
+        return chatGPT_key;
+    }
+
+    public Boolean getOpenai_enable() {
+        return openai_enable;
+    }
 }
