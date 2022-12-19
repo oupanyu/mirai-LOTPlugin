@@ -31,7 +31,7 @@ public final class Main extends JavaPlugin {
 
     public static Socket socket;
 
-    public static Chatbot chatbot = new Chatbot(configloader.getChatGPT_key());
+    public static Chatbot chatbot ;
 
 
 
@@ -79,6 +79,7 @@ public final class Main extends JavaPlugin {
         }
 
         if (configloader.getOpenai_enable()){
+            chatbot = new Chatbot(configloader.getChatGPT_key());
             GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
                 if (event.getMessage().contentToString().equals(".重置ai会话") && !ChatGPT.onProcessing){
                     chatbot.resetChat();
