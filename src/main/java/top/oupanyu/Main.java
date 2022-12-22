@@ -12,6 +12,7 @@ import top.oupanyu.Functions.*;
 import top.oupanyu.Functions.Bilibili.GetBVideoInfo;
 import top.oupanyu.Functions.Zimi.Zimi;
 import top.oupanyu.Functions.chatgpt.ChatGPT;
+import top.oupanyu.Functions.pixiv.Pixiv;
 import top.oupanyu.Functions.transmission.PacketListener;
 import top.oupanyu.Functions.transmission.PacketSender;
 import top.oupanyu.command.Reconnect;
@@ -123,6 +124,8 @@ public final class Main extends JavaPlugin {
             }else if (chain.contentToString().contains("..p站随机图片")) {
                 PixivPic.getPic(chain,event);
             }
+
+            Pixiv.init(event);
 
 
         });

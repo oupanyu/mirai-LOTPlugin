@@ -150,6 +150,7 @@ public class Request {
             URL url = new URL(fileUrl);
             //支持http特定功能
             httpUrl = (HttpURLConnection) url.openConnection();
+
             httpUrl.connect();
             //缓存输入流,提供了一个缓存数组,每次调用read的时候会先尝试从缓存区读取数据
             BufferedInputStream bis = new BufferedInputStream(httpUrl.getInputStream());

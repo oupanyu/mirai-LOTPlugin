@@ -17,6 +17,7 @@ version = "0.2.0"
 repositories {
     maven("https://maven.aliyun.com/repository/public")
     mavenCentral()
+    maven("https://repository.groupdocs.com/repo/")
 }
 dependencies{
     api("com.alibaba:fastjson:2.0.19")

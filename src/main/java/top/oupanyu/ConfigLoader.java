@@ -12,7 +12,7 @@ public class ConfigLoader {
 
     private String tiankey = "";
 
-    private String chatGPT_key;
+    private String chatGPT_key,pixiv_token;
 
     private Boolean transmission,openai_enable;
 
@@ -33,6 +33,7 @@ public class ConfigLoader {
                         "tiankey: \"abcdefg\"\n" +
                         "\n" +
                         "\n" +
+                        "ptoken : \"\""+
                         "#OpenAI functions\n" +
                         "openai_enable : true\n" +
                         "#ChatGPT cookies\n" +
@@ -63,6 +64,7 @@ public class ConfigLoader {
             groupnum = Long.valueOf(String.valueOf(map.get("groupnum")));
             chatGPT_key = (String) map.get("chatGPT_key");
             openai_enable = (Boolean) map.get("openai_enable");
+            pixiv_token = (String)map.get("pkey");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -99,5 +101,9 @@ public class ConfigLoader {
 
     public Boolean getOpenai_enable() {
         return openai_enable;
+    }
+
+    public String getPixiv_token() {
+        return pixiv_token;
     }
 }
