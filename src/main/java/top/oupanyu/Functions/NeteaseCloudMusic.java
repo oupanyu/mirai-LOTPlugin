@@ -36,9 +36,9 @@ public class NeteaseCloudMusic {
 
         Long musicID = jsonSong.getLong("id");
         try {
-            String musicURL = JSONObject.parseObject(Request.get(String.format("http://cloud-music.pl-fe.cn/song/url?id=%s",musicID)))
-                    .getJSONArray("data")
-                    .getJSONObject(0)
+            String musicURL = JSONObject.parseObject(Request.get(String.format("https://api.gmit.vip/Api/Netease?id=%s",musicID)))
+                    .getJSONObject("data")
+                    //.getJSONObject(0)
                     .getString("url");
 
             String message = "歌曲名:"+ songName +"\n歌曲地址为:"+ musicURL;

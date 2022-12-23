@@ -91,6 +91,10 @@ public class Pixiv {
             event.getGroup().sendMessage("出现错误！只能使用整型参数搜索！");
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
+        }catch (NullPointerException ignored){
+            event.getGroup().sendMessage("还没有搜索音乐！请先使用&pixiv来搜索");
+        }catch (IndexOutOfBoundsException ignored){
+            event.getGroup().sendMessage("号码超出范围！请在0-5范围内查找");
         }
     }
 
@@ -108,39 +112,5 @@ public class Pixiv {
 
     }
 
-    public static String downloadFile(String fileUrl,String saveUrl,String filename) {
-        HttpURLConnection httpUrl = null;
-        byte[] buf = new byte[1024];
-        int size = 0;
-        try {
-            //下载的地址
-            URL url = new URL(fileUrl);
-            //支持http特定功能
-            httpUrl = (HttpURLConnection) url.openConnection();
-            //httpUrl.setRequestProperty("token",Main.configloader.getPixiv_token());
-            //HttpURLConnection.setDefaultRequestProperty("token", Main.configloader.getPixiv_token());
-            httpUrl.connect();
-            //缓存输入流,提供了一个缓存数组,每次调用read的时候会先尝试从缓存区读取数据
-            BufferedInputStream bis = new BufferedInputStream(httpUrl.getInputStream());
-            File file = new File(saveUrl);
-            //判断文件夹是否存在
-            if(!file.exists()){
-                file.mkdir();//如果不存在就创建一个文件夹
-            }
-            //讲http上面的地址拆分成数组,
-            String arrUrl[] = fileUrl.split("/");
-            //输出流,输出到新的地址上面
-            FileOutputStream fos = new FileOutputStream(saveUrl+"/"+filename);
-            while ((size = bis.read(buf)) != -1){
-                fos.write(buf, 0, size);
-            }
-            //记得及时释放资源
-            fos.close();
-            bis.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        httpUrl.disconnect();
-        return null;
-    }
+
 }

@@ -111,9 +111,12 @@ public final class Main extends JavaPlugin {
 
         GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
             MessageChain chain=event.getMessage(); // 可获取到消息内容等, 详细查阅 `GroupMessageEvent`
-            if (chain.contentToString().contains(".酷狗音乐")){
+            String content = chain.contentToString();
+            if (chain.contentToString().contains("&kugou")){
                 KugouAPI.getMusic(chain,event);
-            }else if (chain.contentToString().contains(".酷狗mv")){
+            }else if (content.contains("&kid ")){
+              KugouAPI.getMusicURL(event);
+            } else if (chain.contentToString().contains(".酷狗mv")){
                 KugouAPI.getMV(chain,event);
             }else if (chain.contentToString().contains(".网易云音乐")) {
                 NeteaseCloudMusic.getMusic(chain,event);
