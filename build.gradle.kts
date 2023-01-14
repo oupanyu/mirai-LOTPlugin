@@ -22,11 +22,8 @@ repositories {
 dependencies{
     api("com.alibaba:fastjson:2.0.19")
     api("org.yaml:snakeyaml:1.33")
+    implementation("org.nd4j:jackson:1.0.0-M2.1")
     //ChatGPT dependencies
-    api("com.github.plexpt:chatgpt:1.0.3")
-    api("org.springframework:spring-context:5.0.5.RELEASE")
-    api("com.fasterxml.jackson.core:jackson-databind:2.13.3")
-    api("net.dreamlu:mica-http:2.7.6")
-    api("net.dreamlu:mica-core:2.7.6")
+
 }
 

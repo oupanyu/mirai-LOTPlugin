@@ -1,6 +1,5 @@
 package top.oupanyu;
 
-import com.github.plexpt.chatgpt.Chatbot;
 import net.mamoe.mirai.console.command.CommandManager;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
@@ -11,13 +10,14 @@ import net.mamoe.mirai.utils.MiraiLogger;
 import top.oupanyu.Functions.*;
 import top.oupanyu.Functions.Bilibili.GetBVideoInfo;
 import top.oupanyu.Functions.Zimi.Zimi;
-import top.oupanyu.Functions.chatgpt.ChatGPT;
+import top.oupanyu.Functions.baike.BaiduBaike;
 import top.oupanyu.Functions.pixiv.Pixiv;
 import top.oupanyu.Functions.transmission.PacketListener;
 import top.oupanyu.Functions.transmission.PacketSender;
 import top.oupanyu.command.Reconnect;
 import top.oupanyu.command.SendMessage2Server;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Map;
@@ -32,7 +32,6 @@ public final class Main extends JavaPlugin {
 
     public static Socket socket;
 
-    public static Chatbot chatbot ;
 
 
 
@@ -47,6 +46,16 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
+        File[] dir = new File[3];
+        dir[0] = new File("data/cache");
+        dir[1] = new File("data/cache/pcache");
+        dir[2] = new File("data/cache/baike");
+        for (int i = 0;i < dir.length;i++){
+            if (!dir[i].exists()){
+                dir[i].mkdirs();
+            }
+        }//create folders on boot up
 
 
 
@@ -80,24 +89,26 @@ public final class Main extends JavaPlugin {
         }
 
         if (configloader.getOpenai_enable()){
-            chatbot = new Chatbot(configloader.getChatGPT_key());
             GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
-                if (event.getMessage().contentToString().equals(".重置ai会话") && !ChatGPT.onProcessing){
-                    chatbot.resetChat();
-                    event.getGroup().sendMessage("重置完成！");
-                }
+                String content = event.getMessage().contentToString();
+                if (content.contains(".ai ")){
+                    if (GPT3.onProcessing){
+                        event.getSubject().sendMessage("AI还在处理呢！");
+                    }else {
+                        new GPT3().run(event);
+                    }
 
-                if (event.getMessage().contentToString().contains(".ai") && !ChatGPT.onProcessing) {
-                    new ChatGPT().run(event, chatbot);
-                }else if (event.getMessage().contentToString().contains(".ai") && ChatGPT.onProcessing){
-                    event.getGroup().sendMessage("AI还在处理呢！");
+                }else if (content.contains("$重置会话")){
+                    GPT3.reset(event);
                 }
             });
+
 
         }
 
         GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
             MessageChain chain=event.getMessage(); // 可获取到消息内容等, 详细查阅 `GroupMessageEvent`
+            String content = chain.contentToString();
             if (chain.contentToString().equals(".来首词")){
                 RandomPoem.getRandomPoem(chain,event);
             } else if (chain.contentToString().equals(".猜字谜") ||
@@ -126,6 +137,8 @@ public final class Main extends JavaPlugin {
                 APictureADay.getPic(chain,event);
             }else if (chain.contentToString().contains("..p站随机图片")) {
                 PixivPic.getPic(chain,event);
+            }else if(content.contains(".baike ")){
+                BaiduBaike.search(event);
             }
 
             Pixiv.init(event);
