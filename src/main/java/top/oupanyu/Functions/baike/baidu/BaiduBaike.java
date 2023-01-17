@@ -1,16 +1,10 @@
-package top.oupanyu.Functions.baike;
+package top.oupanyu.Functions.baike.baidu;
 
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.event.events.MessageEvent;
-import org.nd4j.shade.jackson.core.exc.StreamReadException;
-import org.nd4j.shade.jackson.databind.DatabindException;
 import org.nd4j.shade.jackson.databind.ObjectMapper;
 import top.oupanyu.request.Request;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 
 public class BaiduBaike {

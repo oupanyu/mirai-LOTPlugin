@@ -23,6 +23,8 @@ dependencies{
     api("com.alibaba:fastjson:2.0.19")
     api("org.yaml:snakeyaml:1.33")
     implementation("org.nd4j:jackson:1.0.0-M2.1")
+    implementation("org.xerial:sqlite-jdbc:3.40.0.0")
+
     //ChatGPT dependencies
 
 }

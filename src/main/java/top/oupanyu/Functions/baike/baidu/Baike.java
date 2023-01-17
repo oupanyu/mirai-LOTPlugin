@@ -1,4 +1,4 @@
-package top.oupanyu.Functions.baike;
+package top.oupanyu.Functions.baike.baidu;
 
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
@@ -41,12 +41,12 @@ public class Baike {
             }
             file.createNewFile();
 
-            int addHight = 100;
+            int addHight = 0;
             for (int i = 0;i<list.size();i++){
                 addHight+=50;
             }
 
-            BufferedImage bufferedImage = new BufferedImage(1080,100+addHight,BufferedImage.TYPE_INT_BGR);
+            BufferedImage bufferedImage = new BufferedImage(1080,addHight,BufferedImage.TYPE_INT_BGR);
             writeImage(bufferedImage,list,file,1080,100+addHight);
             Image image = net.mamoe.mirai.contact.Contact.uploadImage(event.getSubject(),file);
             event.getGroup().sendMessage(image);
@@ -62,7 +62,7 @@ public class Baike {
         g.setFont(new Font("微软雅黑",Font.PLAIN,30));
 
         for (int i = 0;i<list.size();i++){
-            g.drawString((String) list.get(i),20 ,40 + 40*i);
+            g.drawString((String) list.get(i),10 ,40 + 40*i);
         }
 
         //g.drawLine(0, 100, 100, 100);

@@ -29,6 +29,9 @@ public class KugouAPI {
                 JSONObject obj1 = infoArray.getJSONObject(i);
                 JObjectArray.add(i,obj1);
                 result.append(String.format("%s:%s-%s\n",i,obj1.getString("singername"),obj1.getString("songname")));
+                if (i == infoArray.size()-1){
+                    break;
+                }
             }
             kMusicMap.put(event.getGroup().getId(),JObjectArray);
             result.append("获取音乐地址请输入&kid 数字代号");

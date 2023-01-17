@@ -10,7 +10,9 @@ import net.mamoe.mirai.utils.MiraiLogger;
 import top.oupanyu.Functions.*;
 import top.oupanyu.Functions.Bilibili.GetBVideoInfo;
 import top.oupanyu.Functions.Zimi.Zimi;
-import top.oupanyu.Functions.baike.BaiduBaike;
+import top.oupanyu.Functions.baike.baidu.BaiduBaike;
+import top.oupanyu.Functions.cloudmusic.NeteaseCloudMusic;
+import top.oupanyu.Functions.guesssong.GuessSong;
 import top.oupanyu.Functions.pixiv.Pixiv;
 import top.oupanyu.Functions.transmission.PacketListener;
 import top.oupanyu.Functions.transmission.PacketSender;
@@ -20,7 +22,6 @@ import top.oupanyu.command.SendMessage2Server;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
-import java.util.Map;
 
 
 public final class Main extends JavaPlugin {
@@ -56,6 +57,7 @@ public final class Main extends JavaPlugin {
                 dir[i].mkdirs();
             }
         }//create folders on boot up
+        GuessSong.configure();//configure SongGuess when boot up
 
 
 
@@ -129,9 +131,11 @@ public final class Main extends JavaPlugin {
               KugouAPI.getMusicURL(event);
             } else if (chain.contentToString().contains(".酷狗mv")){
                 KugouAPI.getMV(chain,event);
-            }else if (chain.contentToString().contains(".网易云音乐")) {
+            }else if (chain.contentToString().contains(".ncm")) {
                 NeteaseCloudMusic.getMusic(chain,event);
-            }else if (chain.contentToString().contains(".网易云mv")){
+            } else if (content.contains(".nid ")) {
+                NeteaseCloudMusic.getMusicURL(event);
+            } else if (chain.contentToString().contains(".网易云mv")){
                 NeteaseCloudMusic.getMV(chain,event);
             }else if (chain.contentToString().contains("..每日一图")){
                 APictureADay.getPic(chain,event);
@@ -140,9 +144,8 @@ public final class Main extends JavaPlugin {
             }else if(content.contains(".baike ")){
                 BaiduBaike.search(event);
             }
-
             Pixiv.init(event);
-
+            GuessSong.init(event);
 
         });
 
