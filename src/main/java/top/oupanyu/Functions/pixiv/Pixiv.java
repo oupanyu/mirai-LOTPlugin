@@ -15,10 +15,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class Pixiv {
 
-    public static HashMap<Long,JSONArray> groupPixivPicCache = new HashMap<Long,JSONArray>();
+    public static HashMap<Long,Pixiv> groupPixivPicCache = new HashMap<Long,Pixiv>();
+    public JSONArray array;
+    public int page;
+    public Pixiv(JSONArray array,int page){
+        this.array = array;
+        this.page = page;
+    }
 
 
     public static void getArray(GroupMessageEvent event) throws UnsupportedEncodingException {
@@ -38,11 +45,9 @@ public class Pixiv {
                     if (filterKwd.equals("R18") || filterKwd.equals("r18") || filterKwd.equals("r-18") || filterKwd.equals("R-18")) {
                         isR18 = 1;
                         break;
-
                     }
                 }
                 if (isR18 == 1) {
-
                     continue;
                 }
 
@@ -53,21 +58,27 @@ public class Pixiv {
                 result.append(temp);
                 //循环获取Pid、简介
                 an++;
+                Pixiv pixiv =  new Pixiv(jsonArray,i);
+                groupPixivPicCache.put(event.getGroup().getId(), pixiv);
+                event.getGroup().sendMessage(result + "获取图片请输入&pnum 数字代号");
             }
         }catch (Exception e){
+            event.getGroup().sendMessage("Error!\n"+e.getMessage());
             e.printStackTrace();
-        }finally {
-            groupPixivPicCache.put(event.getGroup().getId(), jsonArray);
-            event.getGroup().sendMessage(String.valueOf(result) + "获取图片请输入&pnum 数字代号");
         }
 
     }
+
+    public static void pPage(GroupMessageEvent event){
+
+    }
+
 
     public static void searchArray(GroupMessageEvent event){
         Long groupID = event.getGroup().getId();
         try {
             Integer number = Integer.valueOf(event.getMessage().contentToString().replace("&pnum ",""));
-            JSONArray jsonArray = groupPixivPicCache.get(event.getGroup().getId());
+            JSONArray jsonArray = groupPixivPicCache.get(event.getGroup().getId()).array;
 
                 String url = String.format(jsonArray.getString(number),"UTF-8").replace("i.pximg.net","i.pixiv.re");
                 Request.downloadFile(url,

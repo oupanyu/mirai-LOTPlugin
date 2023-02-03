@@ -4,20 +4,25 @@ import net.mamoe.mirai.console.command.CommandManager;
 import net.mamoe.mirai.console.plugin.jvm.JavaPlugin;
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescriptionBuilder;
 import net.mamoe.mirai.event.GlobalEventChannel;
+import net.mamoe.mirai.event.events.FriendMessageEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
+import net.mamoe.mirai.event.events.GroupTempMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.utils.MiraiLogger;
 import top.oupanyu.Functions.*;
 import top.oupanyu.Functions.Bilibili.GetBVideoInfo;
 import top.oupanyu.Functions.Zimi.Zimi;
 import top.oupanyu.Functions.baike.baidu.BaiduBaike;
+import top.oupanyu.Functions.baike.moegirl.MoeGirl;
 import top.oupanyu.Functions.cloudmusic.NeteaseCloudMusic;
+import top.oupanyu.Functions.guesssong.AppendSong;
 import top.oupanyu.Functions.guesssong.GuessSong;
 import top.oupanyu.Functions.pixiv.Pixiv;
 import top.oupanyu.Functions.transmission.PacketListener;
 import top.oupanyu.Functions.transmission.PacketSender;
 import top.oupanyu.command.Reconnect;
 import top.oupanyu.command.SendMessage2Server;
+import top.oupanyu.helper.Command;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +41,6 @@ public final class Main extends JavaPlugin {
 
 
 
-
     private Main() {
         super(new JvmPluginDescriptionBuilder("top.oupanyu.qqbot", "0.2.0")
                 .name("LOT plugin")
@@ -48,10 +52,13 @@ public final class Main extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        File[] dir = new File[3];
+        //Test.run();
+
+        File[] dir = new File[4];
         dir[0] = new File("data/cache");
         dir[1] = new File("data/cache/pcache");
         dir[2] = new File("data/cache/baike");
+        dir[3] = new File("data/cache/moegirl");
         for (int i = 0;i < dir.length;i++){
             if (!dir[i].exists()){
                 dir[i].mkdirs();
@@ -129,13 +136,13 @@ public final class Main extends JavaPlugin {
                 KugouAPI.getMusic(chain,event);
             }else if (content.contains("&kid ")){
               KugouAPI.getMusicURL(event);
-            } else if (chain.contentToString().contains(".酷狗mv")){
+            } else if (chain.contentToString().contains("&kgmv")){
                 KugouAPI.getMV(chain,event);
             }else if (chain.contentToString().contains(".ncm")) {
                 NeteaseCloudMusic.getMusic(chain,event);
             } else if (content.contains(".nid ")) {
                 NeteaseCloudMusic.getMusicURL(event);
-            } else if (chain.contentToString().contains(".网易云mv")){
+            } else if (chain.contentToString().contains(".网易云mv ")){
                 NeteaseCloudMusic.getMV(chain,event);
             }else if (chain.contentToString().contains("..每日一图")){
                 APictureADay.getPic(chain,event);
@@ -143,6 +150,8 @@ public final class Main extends JavaPlugin {
                 PixivPic.getPic(chain,event);
             }else if(content.contains(".baike ")){
                 BaiduBaike.search(event);
+            }else if (chain.contentToString().contains(".moegirl")){
+                MoeGirl.putText(event);
             }
             Pixiv.init(event);
             GuessSong.init(event);
@@ -171,8 +180,9 @@ public final class Main extends JavaPlugin {
             }
 
         });
-        
 
+        GlobalEventChannel.INSTANCE.subscribeAlways(GroupTempMessageEvent.class, AppendSong::init);
+        GlobalEventChannel.INSTANCE.subscribeAlways(FriendMessageEvent.class,AppendSong::init);
         //listener.complete(); // 停止监听
 
         logger.info("Plugin load done!");

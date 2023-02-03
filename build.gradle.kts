@@ -24,6 +24,7 @@ dependencies{
     api("org.yaml:snakeyaml:1.33")
     implementation("org.nd4j:jackson:1.0.0-M2.1")
     implementation("org.xerial:sqlite-jdbc:3.40.0.0")
+    implementation("org.apache.httpcomponents:httpclient:4.5")
 
     //ChatGPT dependencies
 
