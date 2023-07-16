@@ -3,18 +3,22 @@ package top.oupanyu.Functions.cloudmusic;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson2.JSON;
+import com.google.gson.Gson;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import top.oupanyu.Functions.SendErrorMessage;
+import top.oupanyu.Functions.cloudmusic.responsejson.SearchResponse;
 import top.oupanyu.request.Request;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class NeteaseCloudMusic {
 
-    private static HashMap<Long, JSONArray> NCMusicMap = new HashMap<>();
+    private static HashMap<Long, List<SearchResponse.songs>> NCMusicMap = new HashMap<>();
 
     public static void getMusic(MessageChain chain, GroupMessageEvent event){
 
@@ -27,27 +31,33 @@ public class NeteaseCloudMusic {
         }
         String httpResult = Request.get("http://cloud-music.pl-fe.cn/search?keywords="+post);
 
+        Gson gson = new Gson();
+        SearchResponse searchResponse = gson.fromJson(httpResult, SearchResponse.class);
+        NCMusicMap.put(event.getGroup().getId(),searchResponse.result.songs);
+
         JSONObject object = JSONObject.parseObject(httpResult);//序列化JSON对象
         StringBuilder result = new StringBuilder("获取到的结果为：");//StringBuilder构建返回信息
-        NCMusicMap.put(event.getGroup().getId(),object.getJSONObject("result").getJSONArray("songs"));//将JSON数组加入HashMap
+        //NCMusicMap.put(event.getGroup().getId(),object.getJSONObject("result").getJSONArray("songs"));//将JSON数组加入HashMap
 
         for (int i=0;i<6;i++){
             //获取艺术家与歌名开始
             if(i == NCMusicMap.get(groupNum).size()-1){
                 break;
             }
-            JSONObject jsonSong = NCMusicMap.get(groupNum).getJSONObject(i);
-            JSONArray artistarray = jsonSong.getJSONArray("artists");
+            SearchResponse.songs jsonSong = NCMusicMap.get(groupNum).get(i);
+            List<SearchResponse.songs.artists> artistArray = jsonSong.artists;
+            //JSONArray artistarray = jsonSong.getJSONArray("artists");
             StringBuilder artists = new StringBuilder();
-            for (int j = 0; j < artistarray.size(); j++) {
-                artists.append(artistarray.getJSONObject(j).getString("name")).append(" ");
+            for (int j = 0; j < artistArray.size(); j++) {
+                artists.append(artistArray.get(j).name).append(" ");
             }
-            String songName = artists + "- " + jsonSong.getString("name");
-            if (jsonSong.containsKey("transNames")){
-                String transName = "(" + jsonSong.getJSONArray("transNames").getString(0) + ")";
+            String songName = artists + "- " + jsonSong.name;
+
+            if (jsonSong.transNames != null){
+                String transName = "(" + jsonSong.transNames.get(0) + ")";
                 songName += transName;
             }//结束获取艺术家与歌名
-            NCMusicMap.get(groupNum).getJSONObject(i).put("lsongname",songName);
+            NCMusicMap.get(groupNum).get(i).lsongname = songName;
             result.append("\n").
                     append(i).
                     append("、").
@@ -92,10 +102,10 @@ public class NeteaseCloudMusic {
 
         try {
             Integer ncmid = Integer.valueOf(event.getMessage().contentToString().replace(".nid ",""));
-            JSONArray jsonArray = NCMusicMap.get(event.getGroup().getId());
-            JSONObject musicJSONObj = jsonArray.getJSONObject(ncmid);//从JSON数组中获取音乐JSON对象
-            String songName = musicJSONObj.getString("lsongname");
-            String id = musicJSONObj.getString("id");
+            List<SearchResponse.songs> jsonArray = NCMusicMap.get(event.getGroup().getId());
+            SearchResponse.songs musicJSONObj = jsonArray.get(ncmid);//从JSON数组中获取音乐JSON对象
+            String songName = musicJSONObj.lsongname;
+            String id = musicJSONObj.id;
             String musicURL = JSONObject.parseObject(Request.get(String.format("https://api.gmit.vip/Api/Netease?id=%s",id)))
                     .getJSONObject("data")
                     //.getJSONObject(0)

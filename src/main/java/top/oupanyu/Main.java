@@ -17,12 +17,18 @@ import top.oupanyu.Functions.baike.moegirl.MoeGirl;
 import top.oupanyu.Functions.cloudmusic.NeteaseCloudMusic;
 import top.oupanyu.Functions.guesssong.AppendSong;
 import top.oupanyu.Functions.guesssong.GuessSong;
+import top.oupanyu.Functions.openai.Chat;
 import top.oupanyu.Functions.pixiv.Pixiv;
+import top.oupanyu.Functions.translation.baidu.BaiduTranslateCommand;
 import top.oupanyu.Functions.transmission.PacketListener;
 import top.oupanyu.Functions.transmission.PacketSender;
+import top.oupanyu.command.ChatCommand;
+import top.oupanyu.command.GroupChat;
 import top.oupanyu.command.Reconnect;
 import top.oupanyu.command.SendMessage2Server;
-import top.oupanyu.helper.Command;
+import top.oupanyu.Functions.translation.baidu.Translation;
+import top.oupanyu.excuter.EventExecuter;
+import top.oupanyu.excuter.EventRegister;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +57,10 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        CommandManager.INSTANCE.registerCommand(ChatCommand.INSTANCE,false);
+        CommandManager.INSTANCE.registerCommand(Translation.INSTANCE,false);
+        CommandManager.INSTANCE.registerCommand(GroupChat.INSTANCE,false);
+
 
         //Test.run();
 
@@ -66,7 +76,7 @@ public final class Main extends JavaPlugin {
         }//create folders on boot up
         GuessSong.configure();//configure SongGuess when boot up
 
-
+        EventExecuter.initGroup();
 
         //System.setProperty("file.encoding","UTF-8");
         if (Main.configloader.getTransmission()) {
@@ -98,7 +108,7 @@ public final class Main extends JavaPlugin {
         }
 
         if (configloader.getOpenai_enable()){
-            GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
+            /*GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
                 String content = event.getMessage().contentToString();
                 if (content.contains(".ai ")){
                     if (GPT3.onProcessing){
@@ -110,9 +120,27 @@ public final class Main extends JavaPlugin {
                 }else if (content.contains("$重置会话")){
                     GPT3.reset(event);
                 }
+            });*/
+
+            GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
+                try {
+                    String content = event.getMessage().contentToString();
+                    if (content.contains(".chat ")){
+                        if (Chat.onProccessing){
+                            event.getSubject().sendMessage("AI还在处理呢！");
+                        }else {
+                            Chat.chatOrCreate(event);
+                        }
+
+                    }else if (content.contains("#重置会话")){
+                        Chat.reset(event.getGroup().getId());
+                    }
+                }catch (Exception e){
+                    Chat.onProccessing=false;
+                    e.printStackTrace();
+                }
+
             });
-
-
         }
 
         GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
@@ -155,22 +183,11 @@ public final class Main extends JavaPlugin {
             }
             Pixiv.init(event);
             GuessSong.init(event);
+            BaiduTranslateCommand.init(event);
 
         });
 
-        GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
-            MessageChain chain=event.getMessage(); // 可获取到消息内容等, 详细查阅 `GroupMessageEvent`
-            if (chain.contentToString().contains(".B站")){
-                try {
-                    GetBVideoInfo.getbyAID(chain,event);
-                }catch (NumberFormatException ignored){
-                    GetBVideoInfo.getByBID(chain,event);
-                }
-
-
-            }
-
-        });
+        GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class, EventExecuter::execute);
 
 
         GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
@@ -184,7 +201,7 @@ public final class Main extends JavaPlugin {
         GlobalEventChannel.INSTANCE.subscribeAlways(GroupTempMessageEvent.class, AppendSong::init);
         GlobalEventChannel.INSTANCE.subscribeAlways(FriendMessageEvent.class,AppendSong::init);
         //listener.complete(); // 停止监听
-
+        EventExecuter.register(".B站",new GetBVideoInfo());
         logger.info("Plugin load done!");
     }
 

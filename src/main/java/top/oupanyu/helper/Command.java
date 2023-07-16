@@ -3,13 +3,16 @@ package top.oupanyu.helper;
 import java.util.List;
 
 public class Command {
-    private List list;
+    private List<String> list;
     private String origin;
     private boolean isUsable = false;
     private boolean needFirstKey = false;
     private boolean hasSecondKey = false;
     private String firstKey;
     private String secondKey;
+
+
+
 
     public Command(String originStr){
         try {
@@ -19,7 +22,12 @@ public class Command {
             e.printStackTrace();
         }
     }
-    public Command(List list){
+
+    public static Command getInstance(String src){
+        return new Command(src);
+    }
+
+    public Command(List<String> list){
         this.list = list;
     }
 
@@ -38,6 +46,9 @@ public class Command {
         this.secondKey = key;
         return this;
     }
+    public void setUsable(){
+        isUsable = true;
+    }
     public Command setWhetherNeedFirstKeyOrNot(boolean bool){
         this.needFirstKey = bool;
         return this;
@@ -46,11 +57,15 @@ public class Command {
         return firstKey != null;
     }
     public boolean hasSecondKey() {return secondKey!= null;}
-
     public boolean isFirstKeyEquals(){
         return isUsable && list.get(0).equals(firstKey);
     }
+
+    /**
+     *传入List中的序号和关键词，如果等于则返回true,反之为false
+     **/
     public boolean equals(Integer i,String keyWord){
+
         if (!isUsable){
             return false;
         }
@@ -75,8 +90,19 @@ public class Command {
         return sendWords.equals(keyWord);
     }
 
+    public String getContent(int i){
+        return list.get(i);
+    }
 
     public String getContent(Integer i){
         return isUsable ? (String) list.get(i) : "" ;
+    }
+
+    /**
+     *
+     * @return 该命令分解出的列表大小
+     */
+    public int getLength(){
+        return list.size();
     }
 }

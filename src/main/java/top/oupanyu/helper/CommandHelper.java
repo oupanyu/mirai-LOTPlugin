@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CommandHelper {
-    public static List parseStringToList(String origin){
+
+
+    public static List<String> parseStringToList(String origin){
         //String origin = "char at \" hel\\\"lo\" is good";
         //System.out.println(origin);
-        char cOrigin[] = origin.toCharArray();
+        char[] cOrigin = origin.toCharArray();
         List<String> list = new ArrayList<>();
         int listCount = 0;
         StringBuilder stringBuilder = new StringBuilder();

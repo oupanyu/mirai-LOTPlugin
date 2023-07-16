@@ -18,9 +18,14 @@ public class ConfigLoader {
 
     private String server_ip = "";
 
+    private String openai_key="";
+    private String openai_url="";
+
     private Integer server_port,GPT3_port;
 
     private Long groupnum,qqnum;
+
+    private String baidu_fanyi_key,baidu_fanyi_appid;
 
     public ConfigLoader() {
         try {
@@ -35,10 +40,13 @@ public class ConfigLoader {
                         "pkey : \"\"\n" +
                         "#OpenAI key\n" +
                         "openai_enable : false\n" +
-                        "#openai_key : \"\"\n" +
+                        "openai_key : \"\"\n" +
+                        "openai_host: \"api.openai.com\"\n" +
                         "GPT3_host: \"127.0.0.1\"\n" +
                         "GPT3_port: 5000\n" +
                         "\n" +
+                        "baidu_fanyi_appid: \"\"\n" +
+                        "baidu_fanyi_key: \"\"\n" +
                         "\n" +
                         "qqnum: 1234567890\n" +
                         "transmission: false\n" +
@@ -64,7 +72,12 @@ public class ConfigLoader {
             server_port = (Integer) map.get("server_port");
             groupnum = Long.valueOf(String.valueOf(map.get("groupnum")));
             openai_enable = (Boolean) map.get("openai_enable");
+            openai_key = (String)map.get("openai_key");
+            openai_url = (String)map.get("openai_host");
             pixiv_token = (String)map.get("pkey");
+            baidu_fanyi_key=(String)map.get("baidu_fanyi_key");
+            baidu_fanyi_appid = (String)map.get("baidu_fanyi_appid");
+
             GPT3_host = (String) map.get("GPT3_host");
             GPT3_port = (Integer) map.get("GPT3_port");
 
@@ -112,5 +125,21 @@ public class ConfigLoader {
 
     public String getGPT3_host() {
         return GPT3_host;
+    }
+
+    public String getOpenai_key() {
+        return openai_key;
+    }
+
+    public String getOpenai_url() {
+        return openai_url;
+    }
+
+    public String getBaidu_fanyi_appid() {
+        return baidu_fanyi_appid;
+    }
+
+    public String getBaidu_fanyi_key() {
+        return baidu_fanyi_key;
     }
 }
