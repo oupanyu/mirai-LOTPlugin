@@ -1,10 +1,11 @@
 package top.oupanyu.excuter;
 
-import net.mamoe.mirai.event.events.GroupMemberEvent;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import top.oupanyu.helper.Command;
 
 public class EventExecuter {
+
+
     private static EventRegister<GroupMessageExecuter> eventRegister;
     public static void initGroup(){
         eventRegister = new EventRegister<>();

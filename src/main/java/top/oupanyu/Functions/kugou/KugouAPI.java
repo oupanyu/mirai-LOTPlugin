@@ -1,39 +1,42 @@
-package top.oupanyu.Functions;
+package top.oupanyu.Functions.kugou;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
+import com.google.gson.Gson;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import top.oupanyu.request.Request;
 
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class KugouAPI {
 
-    private static HashMap<Long,JSONArray> kMusicMap = new HashMap<>();
+    private static HashMap<Long, List<KugouJson.data.info>> kMusicMap = new HashMap<>();
 
     public static void getMusic(MessageChain chain, GroupMessageEvent event){
         if (chain.contentToString().contains("&kugou")) {
             try {
             String post = URLEncoder.encode(chain.contentToString().replace("&kugou ",""),"UTF-8");
             String httpResult1 = Request.get("http://mobilecdn.kugou.com/api/v3/search/song?keyword="+post);//从X狗获取JSON对象
-            JSONObject obj = JSON.parseObject(JSON.parseObject(httpResult1).getString("data"));
-            JSONArray infoArray = obj.getJSONArray("info");
-            JSONArray JObjectArray = new JSONArray();
+            KugouJson kugouJson = new KugouJson();
+            Gson gson = new Gson();
+            kugouJson = gson.fromJson(httpResult1, KugouJson.class);
+            List<KugouJson.data.info> infoArray = kugouJson.data.info;
+
             StringBuilder result = new StringBuilder("获取到的结果为：\n");
+            ArrayList<KugouJson.data.info> jObjectArray = new ArrayList<>();
 
             for (int i = 0;i<5;i++){
-                JSONObject obj1 = infoArray.getJSONObject(i);
-                JObjectArray.add(i,obj1);
-                result.append(String.format("%s:%s-%s\n",i,obj1.getString("singername"),obj1.getString("songname")));
+                KugouJson.data.info obj1 = infoArray.get(i);
+                jObjectArray.add(i,obj1);
+                result.append(String.format("%s:%s-%s\n",i,obj1.singername,obj1.songname));
                 if (i == infoArray.size()-1){
                     break;
                 }
             }
-            kMusicMap.put(event.getGroup().getId(),JObjectArray);
+            kMusicMap.put(event.getGroup().getId(),jObjectArray);
             result.append("获取音乐地址请输入&kid 数字代号");
 
             event.getSubject().sendMessage(result.toString()); // 回复消息
@@ -52,13 +55,15 @@ public class KugouAPI {
     public static void getMusicURL(GroupMessageEvent event){
         try {
             Integer kid = Integer.valueOf(event.getMessage().contentToString().replace("&kid ",""));
-            JSONArray jsonArray = kMusicMap.get(event.getGroup().getId());
-            JSONObject musicJSONObj = jsonArray.getJSONObject(kid);
-            String singer = musicJSONObj.getString("singername");
-            String songName = musicJSONObj.getString("songname");
-            String hash = musicJSONObj.getString("hash");
+            List<KugouJson.data.info> jsonArray = kMusicMap.get(event.getGroup().getId());
+            KugouJson.data.info musicJSONObj = jsonArray.get(kid);
+            String singer = musicJSONObj.singername;
+            String songName = musicJSONObj.songname;
+            String hash = musicJSONObj.hash;
             String httpResult2 = Request.get(String.format("http://m.kugou.com/app/i/getSongInfo.php?cmd=playInfo&hash=%s",hash));//获取下载地址JSON
-            String URL = JSON.parseObject(httpResult2).getString("url");
+            String URL = new Gson()
+                    .fromJson(httpResult2,KugouMusicResponse.class)
+                    .url;
 
             String message = "歌曲名:"+ singer + "-" + songName +"\n歌曲地址为:"+ URL;
             event.getGroup().sendMessage(message);
@@ -79,14 +84,16 @@ public class KugouAPI {
         if (chain.contentToString().contains("&kgmv")) {
             try {
                 Integer kid = Integer.valueOf(event.getMessage().contentToString().replace("&kgmv ",""));
-                JSONArray jsonArray = kMusicMap.get(event.getGroup().getId());
-                JSONObject musicJSONObj = jsonArray.getJSONObject(kid);
-                String singer = musicJSONObj.getString("singername");
-                String songName = musicJSONObj.getString("songname");
-                String hash = musicJSONObj.getString("mvhash");
+                List<KugouJson.data.info> jsonArray = kMusicMap.get(event.getGroup().getId());
+                KugouJson.data.info musicJSONObj = jsonArray.get(kid);
+                String singer = musicJSONObj.singername;
+                String songName = musicJSONObj.songname;
+                String hash = musicJSONObj.mvhash;
                 String httpResult2 = Request.get(String.format("http://m.kugou.com/app/i/mv.php?cmd=100&hash="+hash+"&ismp3=1&ext=mp4"));
 
-                String URL = JSON.parseObject(httpResult2).getString("url");
+                String URL = new Gson()
+                        .fromJson(httpResult2, KugouMusicResponse.class)
+                        .url;
                 String message = "歌曲名:"+ singer + "-" + songName +"\nMV地址为:"+ URL;
                 /* String httpResult1 = Request.get("http://mobilecdn.kugou.com/api/v3/search/song?keyword="+post);
                 JSONObject obj = JSON.parseObject(JSON.parseObject(httpResult1).getString("data"));

@@ -1,9 +1,7 @@
 package top.oupanyu.Functions.cloudmusic;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson2.JSON;
 import com.google.gson.Gson;
+import com.google.gson.annotations.SerializedName;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import top.oupanyu.Functions.SendErrorMessage;
@@ -12,7 +10,6 @@ import top.oupanyu.request.Request;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,8 +31,6 @@ public class NeteaseCloudMusic {
         Gson gson = new Gson();
         SearchResponse searchResponse = gson.fromJson(httpResult, SearchResponse.class);
         NCMusicMap.put(event.getGroup().getId(),searchResponse.result.songs);
-
-        JSONObject object = JSONObject.parseObject(httpResult);//序列化JSON对象
         StringBuilder result = new StringBuilder("获取到的结果为：");//StringBuilder构建返回信息
         //NCMusicMap.put(event.getGroup().getId(),object.getJSONObject("result").getJSONArray("songs"));//将JSON数组加入HashMap
 
@@ -98,6 +93,14 @@ public class NeteaseCloudMusic {
     }
 
 
+
+    protected class MusicGetResponse{
+        public data data;
+        public class data{
+            public String url;
+        }
+    }
+
     public static void getMusicURL(GroupMessageEvent event){
 
         try {
@@ -106,10 +109,12 @@ public class NeteaseCloudMusic {
             SearchResponse.songs musicJSONObj = jsonArray.get(ncmid);//从JSON数组中获取音乐JSON对象
             String songName = musicJSONObj.lsongname;
             String id = musicJSONObj.id;
-            String musicURL = JSONObject.parseObject(Request.get(String.format("https://api.gmit.vip/Api/Netease?id=%s",id)))
-                    .getJSONObject("data")
-                    //.getJSONObject(0)
-                    .getString("url");//获取网易云音乐URL
+            String musicURL = new Gson()
+                    .fromJson(
+                            Request.get(String.format("https://api.gmit.vip/Api/Netease?id=%s",id)),
+                            MusicGetResponse.class)
+                    .data
+                    .url;//获取网易云音乐URL
 
             String message = "歌曲名:"+ songName +"\n歌曲地址为:"+ musicURL;
             event.getGroup().sendMessage(message);
@@ -124,6 +129,40 @@ public class NeteaseCloudMusic {
 
 
     }
+
+
+
+    protected class NCMMVJson{
+        public result result;
+        public class result{
+
+            public List<songs> songs;
+            public class songs{
+                public List<artists> artists;
+                public String name;
+                public List<String> transNames;
+                public Integer mvid;
+
+                public class artists{
+                    public String name;
+                    public List<String> transNames;
+                }
+
+            }
+        }
+    }
+
+    protected class mvURLJson{
+        public data data;
+        public class data{
+            public mv mv;
+            public class mv{
+                @SerializedName("480")
+                public String url_480;
+            }
+        }
+    }
+
     public static void getMV(MessageChain chain, GroupMessageEvent event) {
         String post = null;
         try {
@@ -133,28 +172,34 @@ public class NeteaseCloudMusic {
         }
         String httpResult = Request.get("http://cloud-music.pl-fe.cn/search?keywords="+post);
         //System.out.println(post);
-        JSONObject object = JSONObject.parseObject(httpResult);
+
         //System.out.println(object);
-        JSONObject jsonSong = object.getJSONObject("result").getJSONArray("songs").getJSONObject(0);//获取第一首歌曲的JSONObject
+        NCMMVJson.result.songs jsonSong = new Gson()
+                .fromJson(httpResult,NCMMVJson.class)
+                .result
+                .songs
+                .get(0);//获取第一首歌曲的JSONObject
 
         //获取艺术家与歌名开始
-        JSONArray artistArray = jsonSong.getJSONArray("artists");
+        List<NCMMVJson.result.songs.artists> artistArray = jsonSong.artists;
         String artists = "";
         for (int i = 0; i < artistArray.size(); i++) {
-            artists += (artistArray.getJSONObject(i).getString("name") + " ");
+            artists += (artistArray.get(i).name + " ");
         }
-        String songName = artists + "- " + jsonSong.getString("name");
-        if (jsonSong.containsKey("transNames")){//判断是否有译名
-            String transName = "(" + jsonSong.getJSONArray("transNames").getString(0) + ")";
+        String songName = artists + "- " + jsonSong.name;
+        if (jsonSong.transNames != null){//判断是否有译名
+            String transName = "(" + jsonSong.transNames.get(0) + ")";
             songName += transName;
         }//结束获取艺术家与歌名
         Integer mvID = null;
-        if (jsonSong.containsKey("mvid")){//判断是否有MV
-            mvID = jsonSong.getInteger("mvid");
-            String mvURL = JSONObject.parseObject(Request.get(String.format("https://tenapi.cn/wyymv/?id=%s",mvID)))
-                    .getJSONObject("data")
-                    .getJSONObject("mv")
-                    .getString(String.valueOf(480));
+        if (jsonSong.mvid != 0){//判断是否有MV
+            mvID = jsonSong.mvid;
+            String mvURL = new Gson()
+                    .fromJson(Request.get(String.format("https://tenapi.cn/wyymv/?id=%s",mvID)),mvURLJson.class)
+                    .data
+                    .mv
+                    .url_480;
+
             String message = "歌曲名:"+ songName +"\nMV地址为:"+ mvURL;
             event.getSubject().sendMessage(message);
         }else {

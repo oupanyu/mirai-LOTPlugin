@@ -1,27 +1,21 @@
 package top.oupanyu.Functions.Bilibili;
 
-import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
-import okhttp3.OkHttp;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 import top.oupanyu.Functions.Bilibili.Exception.NoSuchVideoVideoException;
 import top.oupanyu.Functions.Bilibili.Exception.WrongBVIDTypeException;
 import top.oupanyu.Functions.Bilibili.json.BiliJson;
 import top.oupanyu.Main;
-
 import top.oupanyu.excuter.GroupMessageExecuter;
 import top.oupanyu.request.Request;
 
-import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class GetBVideoInfo implements GroupMessageExecuter {

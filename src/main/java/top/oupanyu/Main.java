@@ -17,8 +17,8 @@ import top.oupanyu.Functions.baike.moegirl.MoeGirl;
 import top.oupanyu.Functions.cloudmusic.NeteaseCloudMusic;
 import top.oupanyu.Functions.guesssong.AppendSong;
 import top.oupanyu.Functions.guesssong.GuessSong;
+import top.oupanyu.Functions.kugou.KugouAPI;
 import top.oupanyu.Functions.openai.Chat;
-import top.oupanyu.Functions.pixiv.Pixiv;
 import top.oupanyu.Functions.translation.baidu.BaiduTranslateCommand;
 import top.oupanyu.Functions.transmission.PacketListener;
 import top.oupanyu.Functions.transmission.PacketSender;
@@ -28,7 +28,6 @@ import top.oupanyu.command.Reconnect;
 import top.oupanyu.command.SendMessage2Server;
 import top.oupanyu.Functions.translation.baidu.Translation;
 import top.oupanyu.excuter.EventExecuter;
-import top.oupanyu.excuter.EventRegister;
 
 import java.io.File;
 import java.io.IOException;
@@ -174,14 +173,7 @@ public final class Main extends JavaPlugin {
                 NeteaseCloudMusic.getMV(chain,event);
             }else if (chain.contentToString().contains("..每日一图")){
                 APictureADay.getPic(chain,event);
-            }else if (chain.contentToString().contains("..p站随机图片")) {
-                PixivPic.getPic(chain,event);
-            }else if(content.contains(".baike ")){
-                BaiduBaike.search(event);
-            }else if (chain.contentToString().contains(".moegirl")){
-                MoeGirl.putText(event);
             }
-            Pixiv.init(event);
             GuessSong.init(event);
             BaiduTranslateCommand.init(event);
 
@@ -201,8 +193,17 @@ public final class Main extends JavaPlugin {
         GlobalEventChannel.INSTANCE.subscribeAlways(GroupTempMessageEvent.class, AppendSong::init);
         GlobalEventChannel.INSTANCE.subscribeAlways(FriendMessageEvent.class,AppendSong::init);
         //listener.complete(); // 停止监听
-        EventExecuter.register(".B站",new GetBVideoInfo());
+
+        registerEvent();
+
         logger.info("Plugin load done!");
+    }
+
+    public void registerEvent(){
+        EventExecuter.register(".B站",new GetBVideoInfo());
+        EventExecuter.register(".moegirl",new MoeGirl());
+        EventExecuter.register(".baike",new BaiduBaike());
+        EventExecuter.register("..p站随机图片",new PixivPic());
     }
 
 

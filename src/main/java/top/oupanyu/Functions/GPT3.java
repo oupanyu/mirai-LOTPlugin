@@ -1,6 +1,7 @@
 package top.oupanyu.Functions;
 
-import com.alibaba.fastjson2.JSONObject;
+
+import com.google.gson.Gson;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import top.oupanyu.Main;
 import top.oupanyu.request.Request;
@@ -12,6 +13,8 @@ public class GPT3 extends Thread{
 
     public static boolean onProcessing = false;
 
+    private String content;
+
     public void run(GroupMessageEvent event) {
         try {
             GPT3.onProcessing = true;
@@ -21,7 +24,8 @@ public class GPT3 extends Thread{
                                                             Main.configloader.getGPT3_host(),
                                                             Main.configloader.getGPT3_port(),
                                                             send));
-            String msg = JSONObject.parseObject(result).getString("content");
+            Gson gson = new Gson();
+            String msg = gson.fromJson(result,GPT3.class).content;
             event.getGroup().sendMessage(msg);
             GPT3.onProcessing = false;
             return;

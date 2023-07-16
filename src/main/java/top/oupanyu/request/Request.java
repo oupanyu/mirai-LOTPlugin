@@ -1,12 +1,13 @@
 package top.oupanyu.request;
-import com.alibaba.fastjson2.JSONObject;
 
-import javax.net.ssl.HttpsURLConnection;
+import okhttp3.OkHttpClient;
+import okhttp3.Response;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.nio.file.*;
 
 public class Request {
     public static String get(String httpurl) {
@@ -140,6 +141,45 @@ public class Request {
         }
         return result;
     }
+
+    public static void downloadFileWithOkHTTP(String webUrl,String saveUrl,String filename){
+        try {
+            OkHttpClient client = new OkHttpClient().newBuilder().build();
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    //访问路径
+                    .url(webUrl)
+                    .build();
+            Response response = null;
+            response = client.newCall(request).execute();
+            //转化成byte数组
+            byte[] bytes = response.body().bytes();
+            //本地文件夹目录（下载位置）
+            String folder = saveUrl;
+            if (!folder.endsWith("/")){
+                folder += "/";
+            }
+            //切割出图片名称
+            Path folderPath = Paths.get(folder);
+            boolean desk = Files.exists(folderPath);
+            if (!desk) {
+                //不存在文件夹 => 创建
+                Files.createDirectories(folderPath);
+            }
+            Path filePath = Paths.get(folder + filename);
+            boolean exists = Files.exists(filePath, LinkOption.NOFOLLOW_LINKS);
+            if (!exists) {
+                //不存在文件 => 创建
+                Files.write(filePath, bytes, StandardOpenOption.CREATE);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
 
     public static String downloadFile(String fileUrl,String saveUrl,String filename) {
         HttpURLConnection httpUrl = null;

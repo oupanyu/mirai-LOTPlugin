@@ -1,27 +1,36 @@
 package top.oupanyu.Functions;
 
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.message.data.FileMessage;
-import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageChain;
+import net.mamoe.mirai.message.data.*;
+import top.oupanyu.excuter.GroupMessageExecuter;
 import top.oupanyu.request.Request;
 
 import java.io.File;
 import java.util.Arrays;
 
-public class PixivPic {
+public class PixivPic implements GroupMessageExecuter {
 
-    public static void getPic(MessageChain chain, GroupMessageEvent event){
+    public static void getPic(GroupMessageEvent event){
         try {
-            Request.downloadFile("https://px2.rainchan.win/random","data/cache","pixiv.jpg");
+            Request.downloadFileWithOkHTTP("https://px2.rainchan.win/random","data/cache","pixiv.jpg");
             File file = new File("data/cache/pixiv.jpg");
             Image image = net.mamoe.mirai.contact.Contact.uploadImage(event.getSubject(),file);
-            event.getSubject().sendMessage(image);
+
+            MessageChain messages = new MessageChainBuilder().build()
+                                        .plus(new QuoteReply(event.getMessage()))
+                                        .plus(image);
+
+            event.getSubject().sendMessage(messages);
             file.delete();
 
         }catch (Exception e){
             event.getSubject().sendMessage("出现错误！\n" + e.getMessage());
         }
 
+    }
+
+    @Override
+    public void onRun(GroupMessageEvent event) {
+        getPic(event);
     }
 }

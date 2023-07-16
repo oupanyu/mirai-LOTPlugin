@@ -1,10 +1,8 @@
 package top.oupanyu.Functions.baike.baidu;
 
+import com.google.gson.annotations.SerializedName;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageChain;
-import org.nd4j.shade.jackson.annotation.JsonIgnoreProperties;
-import org.nd4j.shade.jackson.annotation.JsonProperty;
 import top.oupanyu.tools.ListHelper;
 
 import javax.imageio.ImageIO;
@@ -14,9 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Baike {
-    @JsonProperty("abstract")
+    @SerializedName("abstract")
     private String content;
     private String imageURL;
 

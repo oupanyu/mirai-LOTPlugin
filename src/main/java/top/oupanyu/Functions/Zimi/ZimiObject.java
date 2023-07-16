@@ -1,10 +1,11 @@
 package top.oupanyu.Functions.Zimi;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.google.gson.Gson;
 import top.oupanyu.Main;
 import top.oupanyu.request.Request;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ZimiObject {
     private String answer;
@@ -23,14 +24,22 @@ public class ZimiObject {
 
     public int getChances(){return this.chances;}
 
+    public List<newslist> newslist;
+    public class newslist{
+        public String content;
+        public String answer;
+        public String reason;
+    }
+
     public void getZimi(){
         try {
             String result = Request.get("https://api.tianapi.com/zimi/index?key="+ Main.configloader.getTiankey());
-            JSONObject obj = JSONObject.parseObject(result);
-            JSONObject newslist = obj.getJSONArray("newslist").getJSONObject(0);
-            this.question = newslist.getString("content");
-            this.answer = newslist.getString("answer");
-            this.reason = newslist.getString("reason");
+            ZimiObject obj = new Gson()
+                    .fromJson(result, ZimiObject.class);
+            newslist newslist = obj.newslist.get(0);
+            this.question = newslist.content;
+            this.answer = newslist.answer;
+            this.reason = newslist.reason;
 
         }catch (Exception e){
             this.answer = this.reason = this.question ="出现错误！请联系开发者,错误原因:\n" + Arrays.toString(e.getStackTrace());

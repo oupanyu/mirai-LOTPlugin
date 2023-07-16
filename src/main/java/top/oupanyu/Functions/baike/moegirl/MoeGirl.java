@@ -2,7 +2,7 @@ package top.oupanyu.Functions.baike.moegirl;
 
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
-import top.oupanyu.request.Request;
+import top.oupanyu.excuter.GroupMessageExecuter;
 import top.oupanyu.request.Requests;
 import top.oupanyu.tools.ListHelper;
 import top.oupanyu.tools.MediaWikiHelper;
@@ -12,12 +12,10 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
-import java.util.regex.Pattern;
 
-public class MoeGirl {
+public class MoeGirl implements GroupMessageExecuter {
     public static void init(GroupMessageEvent event) {
 
     }
@@ -84,5 +82,10 @@ public class MoeGirl {
             e.printStackTrace();
         }
         return val;
+    }
+
+    @Override
+    public void onRun(GroupMessageEvent event) {
+        putText(event);
     }
 }
