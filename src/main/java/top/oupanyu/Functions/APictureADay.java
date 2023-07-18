@@ -3,17 +3,17 @@ package top.oupanyu.Functions;
 import com.google.gson.Gson;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.Image;
-import net.mamoe.mirai.message.data.MessageChain;
+import top.oupanyu.excuter.GroupMessageExecuter;
 import top.oupanyu.request.Request;
 
 import java.io.File;
 
-public class APictureADay {
+public class APictureADay implements GroupMessageExecuter {
 
     private String url;
 
 
-    public static void getPic(MessageChain chain, GroupMessageEvent event){
+    public static void getPic(GroupMessageEvent event){
         try {
             //https://api.leafone.cn/api/bing
             APictureADay aPictureADay = new APictureADay();
@@ -30,5 +30,10 @@ public class APictureADay {
             event.getSubject().sendMessage(e.getMessage());
         }
 
+    }
+
+    @Override
+    public void onRun(GroupMessageEvent event) {
+        getPic(event);
     }
 }

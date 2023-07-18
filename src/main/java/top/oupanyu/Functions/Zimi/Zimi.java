@@ -2,9 +2,11 @@ package top.oupanyu.Functions.Zimi;
 
 import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
+import top.oupanyu.excuter.EventExecuter;
+import top.oupanyu.excuter.GroupMessageExecuter;
 
 
-public class Zimi {
+public class Zimi implements GroupMessageExecuter {
 
     public static void guess(MessageChain chain, GroupMessageEvent event,ZimiObject zimiObject){
             String guess = chain.contentToString().replace(".猜 ","");
@@ -28,7 +30,8 @@ public class Zimi {
         event.getSubject().sendMessage("答案应为： " + result + "\n解析：" + reason);
     }
 
-    public void start(MessageChain chain,GroupMessageEvent event){
+    public void start(GroupMessageEvent event){
+        MessageChain chain = event.getMessage();
         if (chain.contentToString().equals(".猜字谜") && ! ZimiBuffer.groupGuessingZimi.containsKey(event.getGroup().getId())) {
             ZimiObject zimiObject = new ZimiObject();//建立字谜对象
             zimiObject.getZimi();
@@ -43,4 +46,14 @@ public class Zimi {
     }
 
 
+    @Override
+    public void onRun(GroupMessageEvent event) {
+            start(event);
+    }
+    public static void register(){
+        Zimi zimi = new Zimi();
+        EventExecuter.register(".猜字谜",zimi);
+        EventExecuter.register(".猜",zimi);
+        EventExecuter.register(".放弃",zimi);
+    }
 }

@@ -3,9 +3,10 @@ package top.oupanyu.Functions.cloudmusic;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
-import net.mamoe.mirai.message.data.MessageChain;
 import top.oupanyu.Functions.SendErrorMessage;
 import top.oupanyu.Functions.cloudmusic.responsejson.SearchResponse;
+import top.oupanyu.excuter.EventExecuter;
+import top.oupanyu.excuter.GroupMessageExecuter;
 import top.oupanyu.request.Request;
 
 import java.io.UnsupportedEncodingException;
@@ -13,16 +14,16 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 
-public class NeteaseCloudMusic {
+public class NeteaseCloudMusic implements GroupMessageExecuter {
 
     private static HashMap<Long, List<SearchResponse.songs>> NCMusicMap = new HashMap<>();
 
-    public static void getMusic(MessageChain chain, GroupMessageEvent event){
-
+    public static void getMusic(GroupMessageEvent event){
+        String chain = event.getMessage().contentToString();
         long groupNum = event.getGroup().getId();
         String post = null;
         try {
-            post = URLEncoder.encode(chain.contentToString().replace(".ncm ",""),"UTF-8");
+            post = URLEncoder.encode(chain.replace(".ncm ",""),"UTF-8");
         } catch (UnsupportedEncodingException e) {
             SendErrorMessage.send(event,e);
         }
@@ -32,7 +33,6 @@ public class NeteaseCloudMusic {
         SearchResponse searchResponse = gson.fromJson(httpResult, SearchResponse.class);
         NCMusicMap.put(event.getGroup().getId(),searchResponse.result.songs);
         StringBuilder result = new StringBuilder("获取到的结果为：");//StringBuilder构建返回信息
-        //NCMusicMap.put(event.getGroup().getId(),object.getJSONObject("result").getJSONArray("songs"));//将JSON数组加入HashMap
 
         for (int i=0;i<6;i++){
             //获取艺术家与歌名开始
@@ -60,38 +60,28 @@ public class NeteaseCloudMusic {
         }
         event.getGroup().sendMessage(String.valueOf(result.append("\n获取音乐地址请输入.nid 数字代号")));
 
-
-        /*
-        JSONObject jsonSong = object.getJSONObject("result").getJSONArray("songs").getJSONObject(0);
-        //获取艺术家与歌名开始
-        JSONArray artistarray = jsonSong.getJSONArray("artists");
-        String artists = "";
-        for (int i = 0; i < artistarray.size(); i++) {
-            artists += (artistarray.getJSONObject(i).getString("name") + " ");
-        }
-        String songName = artists + "- " + jsonSong.getString("name");
-        if (jsonSong.containsKey("transNames")){
-            String transName = "(" + jsonSong.getJSONArray("transNames").getString(0) + ")";
-            songName += transName;
-        }//结束获取艺术家与歌名
-
-        Long musicID = jsonSong.getLong("id");
-        try {
-            String musicURL = JSONObject.parseObject(Request.get(String.format("https://api.gmit.vip/Api/Netease?id=%s",musicID)))
-                    .getJSONObject("data")
-                    //.getJSONObject(0)
-                    .getString("url");
-
-            String message = "歌曲名:"+ songName +"\n歌曲地址为:"+ musicURL;
-            event.getSubject().sendMessage(message);
-        }catch (Exception e){
-            SendErrorMessage.send(event,e);
-        }*/
-
-
-
     }
 
+    @Override
+    public void onRun(GroupMessageEvent event)
+    {
+        String content = event.getMessage().contentToString();
+        if (content.contains(".ncm")) {
+            NeteaseCloudMusic.getMusic(event);
+        } else if (content.contains(".nid ")) {
+            NeteaseCloudMusic.getMusicURL(event);
+        } else if (content.contains(".nmv ")){
+            NeteaseCloudMusic.getMV(event);
+        }
+    }
+
+    public static void register(){
+        NeteaseCloudMusic neteaseCloudMusic = new NeteaseCloudMusic();
+        EventExecuter.register(".ncm",neteaseCloudMusic);
+        EventExecuter.register(".nid",neteaseCloudMusic);
+        EventExecuter.register(".nmv",neteaseCloudMusic);
+
+    }
 
 
     protected class MusicGetResponse{
@@ -163,10 +153,11 @@ public class NeteaseCloudMusic {
         }
     }
 
-    public static void getMV(MessageChain chain, GroupMessageEvent event) {
+    public static void getMV(GroupMessageEvent event) {
+        String chain = event.getMessage().contentToString();
         String post = null;
         try {
-            post = URLEncoder.encode(chain.contentToString().replace(".网易云MV ",""),"UTF-8");//URL编码
+            post = URLEncoder.encode(chain.replace(".nmv ",""),"UTF-8");//URL编码
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

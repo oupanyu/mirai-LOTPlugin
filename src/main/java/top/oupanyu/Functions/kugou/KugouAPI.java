@@ -20,7 +20,7 @@ public class KugouAPI {
             try {
             String post = URLEncoder.encode(chain.contentToString().replace("&kugou ",""),"UTF-8");
             String httpResult1 = Request.get("http://mobilecdn.kugou.com/api/v3/search/song?keyword="+post);//从X狗获取JSON对象
-            KugouJson kugouJson = new KugouJson();
+            KugouJson kugouJson;
             Gson gson = new Gson();
             kugouJson = gson.fromJson(httpResult1, KugouJson.class);
             List<KugouJson.data.info> infoArray = kugouJson.data.info;

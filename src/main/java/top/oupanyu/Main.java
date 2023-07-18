@@ -9,8 +9,11 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.GroupTempMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.utils.MiraiLogger;
-import top.oupanyu.Functions.*;
+import top.oupanyu.Functions.APictureADay;
 import top.oupanyu.Functions.Bilibili.GetBVideoInfo;
+import top.oupanyu.Functions.Help;
+import top.oupanyu.Functions.PixivPic;
+import top.oupanyu.Functions.RandomPoem;
 import top.oupanyu.Functions.Zimi.Zimi;
 import top.oupanyu.Functions.baike.baidu.BaiduBaike;
 import top.oupanyu.Functions.baike.moegirl.MoeGirl;
@@ -20,13 +23,13 @@ import top.oupanyu.Functions.guesssong.GuessSong;
 import top.oupanyu.Functions.kugou.KugouAPI;
 import top.oupanyu.Functions.openai.Chat;
 import top.oupanyu.Functions.translation.baidu.BaiduTranslateCommand;
+import top.oupanyu.Functions.translation.baidu.Translation;
 import top.oupanyu.Functions.transmission.PacketListener;
 import top.oupanyu.Functions.transmission.PacketSender;
 import top.oupanyu.command.ChatCommand;
 import top.oupanyu.command.GroupChat;
 import top.oupanyu.command.Reconnect;
 import top.oupanyu.command.SendMessage2Server;
-import top.oupanyu.Functions.translation.baidu.Translation;
 import top.oupanyu.excuter.EventExecuter;
 
 import java.io.File;
@@ -36,6 +39,7 @@ import java.net.Socket;
 
 public final class Main extends JavaPlugin {
     public static final Main INSTANCE = new Main();
+
 
     public static final MiraiLogger logger = INSTANCE.getLogger();
 
@@ -56,6 +60,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+
         CommandManager.INSTANCE.registerCommand(ChatCommand.INSTANCE,false);
         CommandManager.INSTANCE.registerCommand(Translation.INSTANCE,false);
         CommandManager.INSTANCE.registerCommand(GroupChat.INSTANCE,false);
@@ -107,19 +112,6 @@ public final class Main extends JavaPlugin {
         }
 
         if (configloader.getOpenai_enable()){
-            /*GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
-                String content = event.getMessage().contentToString();
-                if (content.contains(".ai ")){
-                    if (GPT3.onProcessing){
-                        event.getSubject().sendMessage("AI还在处理呢！");
-                    }else {
-                        new GPT3().run(event);
-                    }
-
-                }else if (content.contains("$重置会话")){
-                    GPT3.reset(event);
-                }
-            });*/
 
             GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
                 try {
@@ -142,19 +134,6 @@ public final class Main extends JavaPlugin {
             });
         }
 
-        GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
-            MessageChain chain=event.getMessage(); // 可获取到消息内容等, 详细查阅 `GroupMessageEvent`
-            String content = chain.contentToString();
-            if (chain.contentToString().equals(".来首词")){
-                RandomPoem.getRandomPoem(chain,event);
-            } else if (chain.contentToString().equals(".猜字谜") ||
-                    chain.contentToString().contains(".猜 ") ||
-                    chain.contentToString().equals(".放弃")){
-                Zimi zimi = new Zimi();
-                zimi.start(chain,event);
-            }
-
-        });
 
         GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
             MessageChain chain=event.getMessage(); // 可获取到消息内容等, 详细查阅 `GroupMessageEvent`
@@ -165,14 +144,6 @@ public final class Main extends JavaPlugin {
               KugouAPI.getMusicURL(event);
             } else if (chain.contentToString().contains("&kgmv")){
                 KugouAPI.getMV(chain,event);
-            }else if (chain.contentToString().contains(".ncm")) {
-                NeteaseCloudMusic.getMusic(chain,event);
-            } else if (content.contains(".nid ")) {
-                NeteaseCloudMusic.getMusicURL(event);
-            } else if (chain.contentToString().contains(".网易云mv ")){
-                NeteaseCloudMusic.getMV(chain,event);
-            }else if (chain.contentToString().contains("..每日一图")){
-                APictureADay.getPic(chain,event);
             }
             GuessSong.init(event);
             BaiduTranslateCommand.init(event);
@@ -204,6 +175,10 @@ public final class Main extends JavaPlugin {
         EventExecuter.register(".moegirl",new MoeGirl());
         EventExecuter.register(".baike",new BaiduBaike());
         EventExecuter.register("..p站随机图片",new PixivPic());
+        Zimi.register();
+        EventExecuter.register(".来首词",new RandomPoem());
+        EventExecuter.register("..每日一图",new APictureADay());
+        NeteaseCloudMusic.register();
     }
 
 
