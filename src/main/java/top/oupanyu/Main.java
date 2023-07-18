@@ -9,23 +9,23 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.GroupTempMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.utils.MiraiLogger;
-import top.oupanyu.Functions.APictureADay;
-import top.oupanyu.Functions.Bilibili.GetBVideoInfo;
-import top.oupanyu.Functions.Help;
-import top.oupanyu.Functions.PixivPic;
-import top.oupanyu.Functions.RandomPoem;
-import top.oupanyu.Functions.Zimi.Zimi;
-import top.oupanyu.Functions.baike.baidu.BaiduBaike;
-import top.oupanyu.Functions.baike.moegirl.MoeGirl;
-import top.oupanyu.Functions.cloudmusic.NeteaseCloudMusic;
-import top.oupanyu.Functions.guesssong.AppendSong;
-import top.oupanyu.Functions.guesssong.GuessSong;
-import top.oupanyu.Functions.kugou.KugouAPI;
-import top.oupanyu.Functions.openai.Chat;
-import top.oupanyu.Functions.translation.baidu.BaiduTranslateCommand;
-import top.oupanyu.Functions.translation.baidu.Translation;
-import top.oupanyu.Functions.transmission.PacketListener;
-import top.oupanyu.Functions.transmission.PacketSender;
+import top.oupanyu.functions.APictureADay;
+import top.oupanyu.functions.Bilibili.GetBVideoInfo;
+import top.oupanyu.functions.Help;
+import top.oupanyu.functions.PixivPic;
+import top.oupanyu.functions.RandomPoem;
+import top.oupanyu.functions.Zimi.Zimi;
+import top.oupanyu.functions.baike.baidu.BaiduBaike;
+import top.oupanyu.functions.baike.moegirl.MoeGirl;
+import top.oupanyu.functions.cloudmusic.NeteaseCloudMusic;
+import top.oupanyu.functions.guesssong.AppendSong;
+import top.oupanyu.functions.guesssong.GuessSong;
+import top.oupanyu.functions.kugou.KugouAPI;
+import top.oupanyu.functions.openai.Chat;
+import top.oupanyu.functions.translation.baidu.BaiduTranslateCommand;
+import top.oupanyu.functions.translation.baidu.Translation;
+import top.oupanyu.functions.transmission.PacketListener;
+import top.oupanyu.functions.transmission.PacketSender;
 import top.oupanyu.command.ChatCommand;
 import top.oupanyu.command.GroupChat;
 import top.oupanyu.command.Reconnect;
@@ -51,7 +51,7 @@ public final class Main extends JavaPlugin {
 
 
     private Main() {
-        super(new JvmPluginDescriptionBuilder("top.oupanyu.qqbot", "0.2.0")
+        super(new JvmPluginDescriptionBuilder("top.oupanyu.qqbot", "0.5.5")
                 .name("LOT plugin")
                 .author("panyuou")
                 .info("GroupPlugin")

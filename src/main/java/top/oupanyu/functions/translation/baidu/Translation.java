@@ -1,4 +1,4 @@
-package top.oupanyu.command;
+package top.oupanyu.functions.translation.baidu;
 
 import com.google.gson.Gson;
 import net.mamoe.mirai.console.command.CommandSender;
@@ -9,7 +9,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.NotNull;
-import top.oupanyu.functions.translation.baidu.ResponseJson;
 import top.oupanyu.Main;
 
 import java.io.IOException;
@@ -37,13 +36,9 @@ public class Translation extends JRawCommand {
         Response response = null;
         try {
             response = client.newCall(request).execute();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
             Gson gson = new Gson();
             ResponseJson responseJson = gson.fromJson(response.body().string(), ResponseJson.class);
-            Main.logger.info(String.valueOf(response));
+            Main.logger.info(responseJson.trans_result.get(0).src);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

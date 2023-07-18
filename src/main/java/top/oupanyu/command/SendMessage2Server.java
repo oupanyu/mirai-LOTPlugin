@@ -1,11 +1,10 @@
 package top.oupanyu.command;
 
-import net.mamoe.mirai.console.command.CommandOwner;
 import net.mamoe.mirai.console.command.CommandSender;
 import net.mamoe.mirai.console.command.java.JRawCommand;
 import net.mamoe.mirai.message.data.MessageChain;
 import org.jetbrains.annotations.NotNull;
-import top.oupanyu.Functions.transmission.PacketSender;
+import top.oupanyu.functions.transmission.PacketSender;
 import top.oupanyu.Main;
 
 public class SendMessage2Server extends JRawCommand {
