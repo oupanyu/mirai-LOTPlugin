@@ -22,6 +22,7 @@ import top.oupanyu.functions.guesssong.AppendSong;
 import top.oupanyu.functions.guesssong.GuessSong;
 import top.oupanyu.functions.kugou.KugouAPI;
 import top.oupanyu.functions.openai.Chat;
+import top.oupanyu.functions.rhythm.guessing.RhythmGuessing;
 import top.oupanyu.functions.translation.baidu.BaiduTranslateCommand;
 import top.oupanyu.functions.translation.baidu.Translation;
 import top.oupanyu.functions.transmission.PacketListener;
@@ -179,6 +180,7 @@ public final class Main extends JavaPlugin {
         EventExecuter.register(".来首词",new RandomPoem());
         EventExecuter.register("..每日一图",new APictureADay());
         NeteaseCloudMusic.register();
+        EventExecuter.register("/rhythm",new RhythmGuessing());
     }
 
 
