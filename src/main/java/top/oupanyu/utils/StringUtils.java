@@ -37,7 +37,7 @@ public class StringUtils {
             return "";
         }
         char[] asteriskArray = asterisk.toCharArray();
-        char[] originArray = asterisk.toCharArray();
+        char[] originArray = origin.toCharArray();
         for (int i=0;i<asterisk.length();i++){
             if (originArray[i] == word){
                 asteriskArray[i] = word;

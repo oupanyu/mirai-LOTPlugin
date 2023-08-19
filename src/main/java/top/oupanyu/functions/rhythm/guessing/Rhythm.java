@@ -10,7 +10,10 @@ public class Rhythm {
     private List<String> origin;
     private List<String> guessing;
     private int correct;
-    public Rhythm(){}
+    public Rhythm(){
+        origin = new ArrayList<>();
+        guessing = new ArrayList<>();
+    }
 
     public void append(String songName){
         if (origin.contains(songName)){

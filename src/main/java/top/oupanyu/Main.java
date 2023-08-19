@@ -80,6 +80,7 @@ public final class Main extends JavaPlugin {
             }
         }//create folders on boot up
         GuessSong.configure();//configure SongGuess when boot up
+        registerInit();
 
         EventExecuter.initGroup();
 
@@ -183,5 +184,7 @@ public final class Main extends JavaPlugin {
         EventExecuter.register("/rhythm",new RhythmGuessing());
     }
 
-
+    public void registerInit(){
+        RhythmGuessing.init();
+    }
 }

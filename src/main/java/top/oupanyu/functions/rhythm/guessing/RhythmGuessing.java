@@ -40,7 +40,7 @@ public class RhythmGuessing implements GroupMessageExecuter {
                 conn = DriverManager.getConnection(url);
                 isInit = true;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -61,27 +61,35 @@ public class RhythmGuessing implements GroupMessageExecuter {
                 case "start":
                     if (guessingMap.containsKey(gid)) {
                         messages.add("当前有未完成的猜曲任务，请先完成或输入/rhythm guess abandon放弃哦");
+                        event.getSubject().sendMessage(messages.build());
                     }else {
                         start(gid,event);
                     }
 
-                    break;
+                    return;
                 case "guess":
                     guess(gid,event,command);
-                    break;
+                    return;
                 case "abandon":
                     int correct = guessingMap.get(gid).getCorrect();
+                    List<String> rhythm = guessingMap.get(gid).getOrigin();
                     guessingMap.remove(gid);
                     messages.add(
-                            String.format("本次猜曲结束!您总共答对了%s题",correct));
-                    break;
+                            String.format("本次猜曲结束!您总共答对了%d题.原题答案：",correct));
+                    for (int i=0;i<rhythm.size();i++){
+                        messages.add(String.format("\n%d.%s",i+1,rhythm.get(i)));
+                    }
+
+
+                    //System.out.println(messages.build().contentToString());
+                    event.getSubject().sendMessage(messages.build());
+                    return;
                 case "open":
                     open(gid,event,command);
-                    break;
+                    return;
                 default:
                     return;
             }
-            event.getSubject().sendMessage(messages.build());
 
 
         }
@@ -97,13 +105,12 @@ public class RhythmGuessing implements GroupMessageExecuter {
                 int sid = new Random().nextInt(1, maxCount);
                 String sql = "SELECT songname FROM Rhythm where id=" + sid;
                 ResultSet resultSet = statement.executeQuery(sql);
-                rhythm.append(resultSet.getString(2));
+                rhythm.append(resultSet.getString(1));
             }
-
+            return rhythm;
         }catch (Exception exception){
             throw new RuntimeException(exception);
         }
-        return null;
     }
 
 
@@ -118,15 +125,16 @@ public class RhythmGuessing implements GroupMessageExecuter {
         assert rhythm != null;
         List<String> guessing = rhythm.getGuessing();
         for (int i=0;i<guessing.size();i++){
-            messages.add(String.format("%d,%s",i+1,guessing.get(i)));
+            messages.add(String.format("\n%d,%s",i+1,guessing.get(i)));
         }
-        messages.add("开字请用/rhythm guess open");
+        messages.add("\n开字请用/rhythm guess open");
+        //System.out.println(messages.build().contentToString());
         event.getSubject().sendMessage(messages.build());
     }
 
     private void open(long gid,GroupMessageEvent event,Command command){
         MessageChainBuilder messages = new MessageChainBuilder();
-        char[] word = command.getContent(2).toCharArray();
+        char[] word = command.getContent(3).toCharArray();
         if (word.length != 1){
             messages.add(new QuoteReply(event.getMessage()));
             messages.add("请输入单个字符！");
@@ -141,17 +149,18 @@ public class RhythmGuessing implements GroupMessageExecuter {
             }
             guessing = rhythm.getGuessing();
             messages.add("当前开字符：" + word[0]);
-            messages.add("\n歌曲列表:\n");
+            messages.add("\n歌曲列表:");
             for (int i =0;i<guessing.size();i++){
-                messages.add(String.format("%d. %s",i,guessing.get(i)));
+                messages.add(String.format("\n%d. %s",i,guessing.get(i)));
             }
         }
+//        System.out.println(messages.build().contentToString());
         event.getSubject().sendMessage(messages.build());
     }
 
     private void guess(long gid,GroupMessageEvent event,Command command){
         MessageChainBuilder messages = new MessageChainBuilder();
-        String answer = command.getContent(2);
+        String answer = command.getContent(3);
         Rhythm rhythm = guessingMap.get(gid);
         List<String> origin = rhythm.getOrigin();
         List<String> guessing = rhythm.getGuessing();
@@ -162,14 +171,17 @@ public class RhythmGuessing implements GroupMessageExecuter {
                 rhythm.change(i, origin.get(i));
                 rhythm.correct(1);
                 for (int j =0;j<guessing.size();j++){
-                    messages.add(String.format("%d. %s",i,guessing.get(i)));
+                    messages.add(String.format("\n%d. %s",j+1,guessing.get(j)));
                 }
                 break;
             }
         }
 
 
-
+        if (messages.isEmpty()){
+            return;
+        }
+//        System.out.println(messages.build().contentToString());
         event.getSubject().sendMessage(messages.build());
     }
 }
