@@ -19,7 +19,8 @@ public class PacketListener implements Runnable{
                 continue;
             }
             //System.out.println(accpet);//输出来自服务器的信息
-            Bot.getInstance(Main.configloader.getQQnum()).getGroup(Main.configloader.getGroupnum()).sendMessage(accpet);
+            Bot.getInstance(Long.valueOf(Main.configloader.transmission.qqnum)).
+                    getGroup(Long.valueOf(Main.configloader.transmission.groupnum)).sendMessage(accpet);
         }
 
     }

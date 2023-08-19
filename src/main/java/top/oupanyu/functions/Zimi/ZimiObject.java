@@ -33,7 +33,7 @@ public class ZimiObject {
 
     public void getZimi(){
         try {
-            String result = Request.get("https://api.tianapi.com/zimi/index?key="+ Main.configloader.getTiankey());
+            String result = Request.get("https://api.tianapi.com/zimi/index?key="+ Main.configloader.tiankey);
             ZimiObject obj = new Gson()
                     .fromJson(result, ZimiObject.class);
             newslist newslist = obj.newslist.get(0);

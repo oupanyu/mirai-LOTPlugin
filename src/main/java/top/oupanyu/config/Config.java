@@ -1,6 +1,20 @@
 package top.oupanyu.config;
 
+import top.oupanyu.database.Drivers;
+
 public class Config {
+
+    public database database;
+    public class database{
+        public Drivers drivers;
+        public String db;
+        public String address;
+        public String username;
+        public String password;
+    }
+
+
+
     //TianXinAPI part
     public String tiankey;
 
@@ -28,4 +42,14 @@ public class Config {
 
 
     public String pixiv_token;
+
+
+
+
+    public void setDB(Drivers drivers){
+        this.database.drivers = drivers;
+    }
+    public Drivers getDB(){
+        return this.database.drivers;
+    }
 }

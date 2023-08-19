@@ -15,7 +15,7 @@ public abstract class AbstractDatabase {
     /**
      * 获取数据库Connection，必须实现。
      */
-    protected abstract void initConnection(String address,String username,String password);
+    protected abstract AbstractDatabase initConnection(String address,String username,String password);
     protected void setConnection(Connection connection){
         this.connection = connection;
     }

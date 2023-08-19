@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class Chat extends Thread{
-    private static String url = String.format("https://%s/v1/chat/completions",Main.configloader.getOpenai_url());
+    private static String url = String.format("https://%s/v1/chat/completions",Main.configloader.openai.openai_url);
 
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
@@ -25,7 +25,7 @@ public class Chat extends Thread{
                 .url(url)
                 .post(body)
                 .header("Content-Type","application/json")
-                .header("Authorization","Bearer "+Main.configloader.getOpenai_key())
+                .header("Authorization","Bearer "+Main.configloader.openai.openai_key)
                 .build();
         Response response = client.newCall(request).execute();
         return response.body().string();

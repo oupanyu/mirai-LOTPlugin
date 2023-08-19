@@ -9,6 +9,9 @@ import net.mamoe.mirai.event.events.GroupMessageEvent;
 import net.mamoe.mirai.event.events.GroupTempMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.utils.MiraiLogger;
+import top.oupanyu.config.Config;
+import top.oupanyu.config.ConfigDefault;
+import top.oupanyu.database.AbstractDatabase;
 import top.oupanyu.functions.APictureADay;
 import top.oupanyu.functions.Bilibili.GetBVideoInfo;
 import top.oupanyu.functions.Help;
@@ -44,7 +47,9 @@ public final class Main extends JavaPlugin {
 
     public static final MiraiLogger logger = INSTANCE.getLogger();
 
-    public static final ConfigLoader configloader = new ConfigLoader();
+    public static final Config configloader = ConfigLoaderNew.configLoaderNew();
+
+    public static AbstractDatabase database = null;
 
     public static Socket socket;
 
@@ -61,6 +66,7 @@ public final class Main extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        Preload.init();
 
         CommandManager.INSTANCE.registerCommand(ChatCommand.INSTANCE,false);
         CommandManager.INSTANCE.registerCommand(Translation.INSTANCE,false);
@@ -69,40 +75,32 @@ public final class Main extends JavaPlugin {
 
         //Test.run();
 
-        File[] dir = new File[4];
-        dir[0] = new File("data/cache");
-        dir[1] = new File("data/cache/pcache");
-        dir[2] = new File("data/cache/baike");
-        dir[3] = new File("data/cache/moegirl");
-        for (int i = 0;i < dir.length;i++){
-            if (!dir[i].exists()){
-                dir[i].mkdirs();
-            }
-        }//create folders on boot up
+
         GuessSong.configure();//configure SongGuess when boot up
         registerInit();
 
         EventExecuter.initGroup();
 
         //System.setProperty("file.encoding","UTF-8");
-        if (Main.configloader.getTransmission()) {
+        if (Main.configloader.transmission.transmission) {
 
             CommandManager.INSTANCE.registerCommand(SendMessage2Server.INSTANCE,false);
             CommandManager.INSTANCE.registerCommand(Reconnect.INSTANCE,false);
 
             try {
-                socket = new Socket(configloader.getServer_ip(), configloader.getServer_port());
+                socket = new Socket(configloader.transmission.server_ip, configloader.transmission.server_port);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             new Thread(new PacketListener()).start();
             GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class, event -> {
-                if (event.getGroup().getId() == Main.configloader.getGroupnum() && !event.getMessage().contentToString().equals("!重连")) {
+                if (event.getGroup().getId() == Long.valueOf(configloader.transmission.groupnum) &&
+                        !event.getMessage().contentToString().equals("!重连")) {
                     PacketSender.send(event);
                 }else if (event.getMessage().contentToString().equals("!重连")){
                     try {
                         socket.close();
-                        socket = new Socket(configloader.getServer_ip(), configloader.getServer_port());
+                        socket = new Socket(configloader.transmission.server_ip, configloader.transmission.server_port);
                         event.getSubject().sendMessage("重连成功！");
                     } catch (IOException e) {
                         event.getSubject().sendMessage("重连失败！");
@@ -113,7 +111,7 @@ public final class Main extends JavaPlugin {
             });
         }
 
-        if (configloader.getOpenai_enable()){
+        if (configloader.openai.openai_enable){
 
             GlobalEventChannel.INSTANCE.subscribeAlways(GroupMessageEvent.class,event->{
                 try {

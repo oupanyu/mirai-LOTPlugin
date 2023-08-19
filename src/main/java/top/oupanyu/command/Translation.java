@@ -23,9 +23,9 @@ public class Translation extends JRawCommand {
     @Override
     public void onCommand(@NotNull CommandSender sender, @NotNull MessageChain args) {
 
-        String appid = Main.configloader.getBaidu_fanyi_appid();
+        String appid = Main.configloader.baidu_fanyi.baidu_fanyi_appid;
         String salt = "qwsdfg";
-        String key = Main.configloader.getBaidu_fanyi_key();
+        String key = Main.configloader.baidu_fanyi.baidu_fanyi_key;
         String md5 = DigestUtils.md5Hex(appid+args.contentToString()+salt+key);
         OkHttpClient client = new OkHttpClient().newBuilder().build();
 

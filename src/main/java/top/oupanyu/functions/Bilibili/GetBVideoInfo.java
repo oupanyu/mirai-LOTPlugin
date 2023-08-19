@@ -30,7 +30,7 @@ public class GetBVideoInfo implements GroupMessageExecuter {
                     .url(String.format("http://api.bilibili.com/x/web-interface/view?aid=%s",avid))
                     .get()
                     .header("Content-Type","application/json")
-                    .header("Authorization","Bearer "+ Main.configloader.getOpenai_key())
+                    .header("Authorization","Bearer "+ Main.configloader.openai.openai_key)
                     .build();
             Response response = client.newCall(request).execute();
             String result = response.body().string();
@@ -91,7 +91,7 @@ public class GetBVideoInfo implements GroupMessageExecuter {
                     .url(String.format("http://api.bilibili.com/x/web-interface/view?bvid=%s",bvid))
                     .get()
                     .header("Content-Type","application/json")
-                    .header("Authorization","Bearer "+ Main.configloader.getOpenai_key())
+                    .header("Authorization","Bearer "+ Main.configloader.openai.openai_key)
                     .build();
             Response response = client.newCall(request).execute();
             String result = response.body().string();

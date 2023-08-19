@@ -17,8 +17,8 @@ import java.util.Calendar;
 
 public class BaiduTranslate {
 
-    private static String appid = Main.configloader.getBaidu_fanyi_appid();
-    private static String key = Main.configloader.getBaidu_fanyi_key();
+    private static String appid = Main.configloader.baidu_fanyi.baidu_fanyi_appid;
+    private static String key = Main.configloader.baidu_fanyi.baidu_fanyi_key;
 
     public static final String url = "https://fanyi-api.baidu.com/api/trans/vip/translate?q=%s&from=%s&to=%s&appid=%s&salt=%s&sign=%s";
     public static void translateIntoChinese(GroupMessageEvent e,String src){

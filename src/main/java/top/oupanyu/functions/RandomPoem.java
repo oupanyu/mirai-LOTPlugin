@@ -26,7 +26,7 @@ public class RandomPoem implements GroupMessageExecuter {
     public static void getRandomPoem(GroupMessageEvent event){
         MessageChain chain = event.getMessage();
         if (chain.contentToString().equals(".来首词")){
-            String httpResult = Request.get("http://api.tianapi.com/zmsc/index?key=" + Main.configloader.getTiankey());
+            String httpResult = Request.get("http://api.tianapi.com/zmsc/index?key=" + Main.configloader.tiankey);
             List<newslist> obj = new Gson()
                     .fromJson(httpResult,RandomPoem.class)
                     .newslist;

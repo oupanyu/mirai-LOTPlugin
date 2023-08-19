@@ -25,7 +25,7 @@ public class Reconnect extends JRawCommand {
         try {
             Main.logger.info("Reconnecting...");
             Main.socket.close();
-            Main.socket = new Socket(configloader.getServer_ip(), configloader.getServer_port());
+            Main.socket = new Socket(configloader.transmission.server_ip, configloader.transmission.server_port);
             Main.logger.info("Reconnect done!");
         } catch (IOException e) {
             Main.logger.warning("Reconnect failed!");
