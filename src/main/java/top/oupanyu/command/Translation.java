@@ -43,7 +43,7 @@ public class Translation extends JRawCommand {
         try {
             Gson gson = new Gson();
             ResponseJson responseJson = gson.fromJson(response.body().string(), ResponseJson.class);
-            Main.logger.info(String.valueOf(response));
+            Main.LOGGER.info(String.valueOf(response));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

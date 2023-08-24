@@ -31,7 +31,7 @@ public class ConfigLoaderNew {
                 try (FileWriter writer = new FileWriter(fileName)){
                     yaml.toJson(config,writer);
                 }
-                Main.logger.error("[Mirai-LOTPlugin] Please do some configs at first!Config file is in "+fileName);
+                Main.LOGGER.error("[Mirai-LOTPlugin] Please do some configs at first!Config file is in "+fileName);
                 System.exit(1);
             }
             FileReader fileReader = new FileReader(file);

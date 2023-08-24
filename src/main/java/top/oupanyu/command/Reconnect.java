@@ -23,12 +23,12 @@ public class Reconnect extends JRawCommand {
     public void onCommand(@NotNull CommandSender sender, @NotNull MessageChain args) {
         // 处理指令
         try {
-            Main.logger.info("Reconnecting...");
+            Main.LOGGER.info("Reconnecting...");
             Main.socket.close();
             Main.socket = new Socket(configloader.transmission.server_ip, configloader.transmission.server_port);
-            Main.logger.info("Reconnect done!");
+            Main.LOGGER.info("Reconnect done!");
         } catch (IOException e) {
-            Main.logger.warning("Reconnect failed!");
+            Main.LOGGER.warning("Reconnect failed!");
         }
 
     }

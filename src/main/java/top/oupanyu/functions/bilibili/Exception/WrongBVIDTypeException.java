@@ -1,4 +1,4 @@
-package top.oupanyu.functions.Bilibili.Exception;
+package top.oupanyu.functions.bilibili.Exception;
 
 public class WrongBVIDTypeException extends Exception{
 }

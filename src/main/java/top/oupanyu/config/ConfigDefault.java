@@ -2,10 +2,10 @@ package top.oupanyu.config;
 
 public class ConfigDefault {
 
-    public Config.database database;
+    public database database = new database();
     public class database{
         public String db = "sqlite";
-        public String address = "";
+        public String address = "data/lotplugin/data.db";
         public String username = "";
         public String password = "";
     }
@@ -34,6 +34,14 @@ public class ConfigDefault {
         public String baidu_fanyi_key = "";
         public String baidu_fanyi_appid = "";
     }
+
+    public xunfeiSpark xunfeiSpark = new xunfeiSpark();
+    public class xunfeiSpark{
+        public String appid = "";
+        public String apiKey = "";
+        public String apiSecret = "";
+    }
+
 
 
     public String pixiv_token = "";

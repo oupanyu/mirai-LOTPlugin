@@ -57,7 +57,7 @@ public class Chat extends Thread{
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(event.getGroup().getId()).append("--").append(event.getSenderName())
                             .append("--").append(content).append("--Ans:").append(openAI.getLastAnswer());
-            Main.logger.info(stringBuilder.toString());
+            //Main.LOGGER.info(stringBuilder.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -76,7 +76,7 @@ public class Chat extends Thread{
         try {
             String answer = post(id);
             openAI.addAnswer(answer);
-            Main.logger.info(openAI.getLastAnswer());
+            //Main.logger.info(openAI.getLastAnswer());
 
         } catch (IOException e) {
             onProccessing=false;

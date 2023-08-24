@@ -26,6 +26,11 @@ public abstract class AbstractDatabase {
             throw new RuntimeException(e);
         }
     }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
     public ResultSet execute(String sql){
         try {
             Statement statement = connection.createStatement();
@@ -48,5 +53,8 @@ public abstract class AbstractDatabase {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+    public ResultSet getOrCreateTable(String tableName){
+        return null;
     }
 }

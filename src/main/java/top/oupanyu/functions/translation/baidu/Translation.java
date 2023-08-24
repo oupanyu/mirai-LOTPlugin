@@ -38,7 +38,7 @@ public class Translation extends JRawCommand {
             response = client.newCall(request).execute();
             Gson gson = new Gson();
             ResponseJson responseJson = gson.fromJson(response.body().string(), ResponseJson.class);
-            Main.logger.info(responseJson.trans_result.get(0).src);
+            //Main.logger.info(responseJson.trans_result.get(0).src);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

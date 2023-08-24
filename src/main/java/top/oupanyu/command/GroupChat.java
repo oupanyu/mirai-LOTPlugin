@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import top.oupanyu.Main;
 import top.oupanyu.helper.Command;
 
-import static top.oupanyu.Main.logger;
+import static top.oupanyu.Main.LOGGER;
 
 public class GroupChat extends JRawCommand {
 
@@ -28,7 +28,7 @@ public class GroupChat extends JRawCommand {
         try {
             if(args.get(0).contentToString().equals("list")){
                 long qq = Long.parseLong(args.get(1).contentToString());
-                logger.info(Bot.getInstance(qq).getGroups().toString());
+                LOGGER.info(Bot.getInstance(qq).getGroups().toString());
                 return;
             }
 

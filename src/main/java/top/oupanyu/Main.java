@@ -10,10 +10,9 @@ import net.mamoe.mirai.event.events.GroupTempMessageEvent;
 import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.utils.MiraiLogger;
 import top.oupanyu.config.Config;
-import top.oupanyu.config.ConfigDefault;
 import top.oupanyu.database.AbstractDatabase;
 import top.oupanyu.functions.APictureADay;
-import top.oupanyu.functions.Bilibili.GetBVideoInfo;
+import top.oupanyu.functions.bilibili.GetBVideoInfo;
 import top.oupanyu.functions.Help;
 import top.oupanyu.functions.PixivPic;
 import top.oupanyu.functions.RandomPoem;
@@ -35,8 +34,8 @@ import top.oupanyu.command.GroupChat;
 import top.oupanyu.command.Reconnect;
 import top.oupanyu.command.SendMessage2Server;
 import top.oupanyu.excuter.EventExecuter;
+import top.oupanyu.functions.xunfei.spark.XunfeiSpark;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -45,7 +44,7 @@ public final class Main extends JavaPlugin {
     public static final Main INSTANCE = new Main();
 
 
-    public static final MiraiLogger logger = INSTANCE.getLogger();
+    public static final MiraiLogger LOGGER = INSTANCE.getLogger();
 
     public static final Config configloader = ConfigLoaderNew.configLoaderNew();
 
@@ -167,7 +166,7 @@ public final class Main extends JavaPlugin {
 
         registerEvent();
 
-        logger.info("Plugin load done!");
+        LOGGER.info("Plugin load done!");
     }
 
     public void registerEvent(){
@@ -180,6 +179,7 @@ public final class Main extends JavaPlugin {
         EventExecuter.register("..每日一图",new APictureADay());
         NeteaseCloudMusic.register();
         EventExecuter.register("/rhythm",new RhythmGuessing());
+        EventExecuter.register(".spark",new XunfeiSpark());
     }
 
     public void registerInit(){

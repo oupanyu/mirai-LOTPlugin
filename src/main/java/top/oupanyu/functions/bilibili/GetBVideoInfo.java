@@ -1,4 +1,4 @@
-package top.oupanyu.functions.Bilibili;
+package top.oupanyu.functions.bilibili;
 
 import com.google.gson.Gson;
 import net.mamoe.mirai.event.events.GroupMessageEvent;
@@ -7,9 +7,9 @@ import net.mamoe.mirai.message.data.MessageChain;
 import net.mamoe.mirai.message.data.MessageChainBuilder;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import top.oupanyu.functions.Bilibili.Exception.NoSuchVideoVideoException;
-import top.oupanyu.functions.Bilibili.Exception.WrongBVIDTypeException;
-import top.oupanyu.functions.Bilibili.json.BiliJson;
+import top.oupanyu.functions.bilibili.Exception.NoSuchVideoVideoException;
+import top.oupanyu.functions.bilibili.Exception.WrongBVIDTypeException;
+import top.oupanyu.functions.bilibili.json.BiliJson;
 import top.oupanyu.Main;
 import top.oupanyu.excuter.GroupMessageExecuter;
 import top.oupanyu.request.Request;

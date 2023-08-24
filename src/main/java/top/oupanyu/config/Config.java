@@ -40,6 +40,13 @@ public class Config {
         public String baidu_fanyi_appid;
     }
 
+    public xunfeiSpark xunfeiSpark;
+    public class xunfeiSpark{
+        public String appid;
+        public String apiKey;
+        public String apiSecret;
+    }
+
 
     public String pixiv_token;
 

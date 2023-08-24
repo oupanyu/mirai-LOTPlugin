@@ -1,4 +1,4 @@
-package top.oupanyu.functions.Bilibili.json;
+package top.oupanyu.functions.bilibili.json;
 
 public class BiliJson {
     public int code;
