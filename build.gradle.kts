@@ -20,6 +20,7 @@ dependencies{
     implementation("org.apache.httpcomponents:httpclient:4.5.13")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("io.github.briqt:xunfei-spark4j:1.0.0")
     //implementation()
     //ChatGPT dependencies
 
